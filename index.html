@@ -2,264 +2,85 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASWRA | Anambra State Waste Recyclers Association</title>
 <meta name="description" content="The Anambra State Waste Recyclers Association (ASWRA): sustainable waste management, responsible recycling and a cleaner, healthier Anambra State.">
 <meta name="theme-color" content="#0f4d2a">
 <link rel="icon" href="a.jpg" type="image/jpeg">
-<title>ASWRA | Anambra State Waste Recyclers Association</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#f1f7ef;--surface:#fff;--ink:#10301f;--mute:#4a6050;--g:#1f7a3d;--gd:#0f4d2a;--leaf:#7cc242;--sun:#f2b705;--line:#cfe0cf;--on-g:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1a10;--surface:#12281a;--ink:#e6f2e6;--mute:#a3bfaa;--g:#6cc57f;--gd:#0c3a20;--line:#21402b;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0a1a10;--surface:#12281a;--ink:#e6f2e6;--mute:#a3bfaa;--g:#6cc57f;--gd:#0c3a20;--line:#21402b;color-scheme:dark}
-html{scroll-padding-top:calc(80px + env(safe-area-inset-top,0px))}
-*,*::before,*::after{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.65 "Instrument Sans",system-ui,sans-serif;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--gd);z-index:40}
-h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.12;margin:0 0 .5em;letter-spacing:-.02em}
-h1{font-size:clamp(2.3rem,7vw,4rem);font-weight:800}
-h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800}
-h3{font-size:1.12rem;font-weight:600}
-p{margin:0 0 1em;max-width:66ch}
-a{color:var(--g)}
-.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-.sec{padding:56px 0}.alt{background:var(--surface);border-block:1px solid var(--line)}
-.eyebrow{font:600 .85rem "Instrument Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--g);margin-bottom:8px}
-.lead{font-size:1.12rem;color:var(--mute)}
-.skip{position:absolute;left:-999px;top:8px;background:var(--sun);color:#1c2a10;padding:8px 14px;border-radius:8px;z-index:50}
-.skip:focus{left:8px}
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--gd);color:#fff}
-.nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;min-height:60px;gap:10px}
-.logo{font:800 1.3rem "Bricolage Grotesque",sans-serif;text-decoration:none;color:#fff;display:flex;align-items:center;gap:10px}
-.logo img{width:40px;height:40px;border-radius:50%;background:#fff;object-fit:cover}
-.burger{background:transparent;border:2px solid #fff;color:#fff;border-radius:10px;width:46px;height:42px;font-size:1.3rem;cursor:pointer}
-nav{display:none;width:100%;flex-direction:column;gap:2px;padding:6px 0 14px}
-nav.open{display:flex}
-nav a{color:#e4f3e4;text-decoration:none;padding:12px 14px;border-radius:8px}
-nav a[aria-current="page"]{background:var(--leaf);color:#0b2a14;font-weight:600}
-nav a.btn{margin-top:6px;text-align:center}
-@media (min-width:900px){.burger{display:none}nav,nav.open{display:flex;flex-direction:row;width:auto;align-items:center;padding:0}nav a{padding:8px 13px;font-size:.96rem}nav a.btn{margin:0 0 0 8px}}
-.btn{display:inline-block;background:var(--sun);color:#1c2a10;font:600 1rem "Instrument Sans",sans-serif;padding:12px 22px;border-radius:10px;border:0;text-decoration:none;cursor:pointer;min-height:44px;text-align:center}
-nav a.btn{color:#1c2a10;font-weight:600}
-.btn.g{background:var(--g);color:var(--on-g)}
-.btn.o{background:transparent;color:#fff;border:2px solid #fff}
-.btn.s{min-height:38px;padding:8px 16px}
-:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
-.hero{background:linear-gradient(155deg,var(--gd),#1b6b38);color:#fff;padding:64px 0 56px;position:relative;overflow:hidden}
-.hero .wrap{position:relative}
-.hero p{font-size:1.2rem;color:#d6ecd6}
-.hero svg{position:absolute;right:-60px;top:50%;width:min(520px,90vw);transform:translateY(-50%);opacity:.14;pointer-events:none}
-.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
-.ph-hero{max-width:640px}
-.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin:40px 0 0}
-.pillar{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--leaf);border-radius:14px;padding:22px 20px}
-.pillar b{display:block;font:800 1.05rem "Bricolage Grotesque",sans-serif}
-.pillar span{color:var(--mute);font-size:.94rem}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin:24px 0}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
-.alt .card{background:var(--bg)}
-.card p{color:var(--mute);font-size:.97rem;margin:0 0 .6em}
-.card p:last-child{margin:0}
-.num{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--g);color:var(--on-g);font:800 .95rem "Bricolage Grotesque",sans-serif;margin-bottom:10px}
-.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;align-items:start}
-.todo{border:2px dashed var(--sun);border-radius:14px;padding:18px;background:var(--surface)}
-.tag{display:inline-block;font:600 .74rem "Instrument Sans",sans-serif;text-transform:uppercase;letter-spacing:.05em;background:var(--sun);color:#1c2a10;border-radius:999px;padding:2px 10px;margin-bottom:8px}
-.cel{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.cel div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:18px}
-.cd{font:800 1.5rem "Bricolage Grotesque",sans-serif;color:var(--sun);display:block;margin-top:6px}
-.band{background:var(--gd);color:#fff}
-.band h2{color:#fff}.band p{color:#d6ecd6}
-ul.chk{list-style:none;padding:0;margin:12px 0}
-ul.chk li{padding:6px 0 6px 28px;position:relative;color:var(--ink)}
-ul.chk li::before{content:"";position:absolute;left:0;top:13px;width:14px;height:8px;border-left:3px solid var(--g);border-bottom:3px solid var(--g);transform:rotate(-45deg)}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
-.chips span{background:var(--surface);border:1.5px solid var(--leaf);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.93rem}
-.lcard{text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 16px}
-.av{width:104px;height:104px;border-radius:50%;background:var(--line);fill:var(--mute);padding:20px;border:3px dashed var(--sun);margin:0 auto 10px;display:block}
-.lcard h3{margin-bottom:2px}.lcard p{margin:0 0 8px;color:var(--mute);font-size:.95rem}
-form.card{display:block}
-label{display:block;font-weight:600;font-size:.93rem;margin:12px 0 4px}
-input,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:11px 12px}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.note{font-size:.88rem;color:var(--mute)}
-footer{background:var(--gd);color:#cfe6cf;padding:36px 0 40px;font-size:.93rem}
-footer a{color:#fff}
-.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
-footer h3{color:#fff;font-size:1rem}
-footer .l{display:flex;flex-direction:column;gap:6px}
-.wab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;background:#25d366;color:#06361a;font:600 1rem "Instrument Sans",sans-serif;padding:12px 18px;border-radius:999px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.3)}
-.pg:focus{outline:none}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-@media (max-width:520px){.sec{padding:44px 0}.hero{padding:48px 0 52px}}
-</style>
+<link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="u" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/></symbol></svg>
-<a class="skip" href="#" onclick="event.preventDefault();document.getElementById('main').focus()">Skip to content</a>
-<header><div class="wrap nav">
-<a class="logo" href="#home"><img src="a.jpg" alt="" width="40" height="40">ASWRA</a>
-<button class="burger" id="bg" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">☰</button>
-<nav id="menu" aria-label="Main"><a href="#home">Home</a><a href="#about">About Us</a><a href="#what-we-do">What We Do</a><a href="#leadership">Leadership</a><a href="#contact">Contact</a><a class="btn s" href="#contact">Join ASWRA</a></nav>
-</div></header>
-
-<main id="main" tabindex="-1" class="pg">
-<noscript><div class="wrap sec"><p>Please enable JavaScript to view this website, or contact ASWRA on 07085379538.</p></div></noscript>
-
-<!-- HOME -->
-<div data-p="home" data-t="Home">
-<section class="hero"><svg viewBox="0 0 200 200" aria-hidden="true" fill="#7cc242"><g stroke="#7cc242" stroke-width="14" fill="none" stroke-linecap="round"><path d="M100 20A80 80 0 0 1 169 140"/><path transform="rotate(120 100 100)" d="M100 20A80 80 0 0 1 169 140"/><path transform="rotate(240 100 100)" d="M100 20A80 80 0 0 1 169 140"/></g><g><polygon points="181.4,147 157.2,133 158.3,159"/><polygon transform="rotate(120 100 100)" points="181.4,147 157.2,133 158.3,159"/><polygon transform="rotate(240 100 100)" points="181.4,147 157.2,133 158.3,159"/></g></svg>
-<div class="wrap"><div class="ph-hero">
-<p class="eyebrow" style="color:var(--leaf)">Anambra State Waste Recyclers Association</p>
+<body data-page="home">
+<!--HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="container nav-bar">
+<a class="brand" href="index.html"><img src="a.jpg" alt="" width="40" height="40">ASWRA</a>
+<button class="burger" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">&#9776;</button>
+<nav class="nav" id="site-nav" aria-label="Main">
+<a data-page="home" href="index.html">Home</a>
+<a data-page="about" href="about.html">About Us</a>
+<a data-page="activities" href="activities.html">What We Do</a>
+<a data-page="leadership" href="leadership.html">Leadership</a>
+<a data-page="membership" href="membership.html">Membership</a>
+<a data-page="contact" href="contact.html">Contact</a>
+<a class="btn" href="membership.html#apply">Apply for Membership</a>
+</nav></div></header>
+<!--/HEADER-->
+<main id="main" tabindex="-1">
+<section class="hero"><svg viewBox="0 0 200 200" aria-hidden="true" fill="#7cc242"><g stroke="#7cc242" stroke-width="14" fill="none" stroke-linecap="round"><path d="M100 20A80 80 0 0 1 169 140"/><path transform="rotate(120 100 100)" d="M100 20A80 80 0 0 1 169 140"/><path transform="rotate(240 100 100)" d="M100 20A80 80 0 0 1 169 140"/></g><polygon points="181.4,147 157.2,133 158.3,159"/><polygon transform="rotate(120 100 100)" points="181.4,147 157.2,133 158.3,159"/><polygon transform="rotate(240 100 100)" points="181.4,147 157.2,133 158.3,159"/></svg>
+<div class="container"><div class="hero-text">
+<p class="eyebrow">Anambra State Waste Recyclers Association</p>
 <h1>Turning waste into wealth.</h1>
 <p>ASWRA brings waste collectors, recyclers and recycling businesses together to keep Anambra State clean and healthy and to create decent livelihoods from recycling.</p>
-<div class="cta"><a class="btn" href="#contact">Join ASWRA</a><a class="btn o" href="#about">Learn about us</a></div>
+<div class="cta"><a class="btn" href="membership.html#apply">Apply for Membership</a><a class="btn outline" href="application-status/">Check application status</a></div>
 </div></div></section>
-<div class="wrap"><div class="pillars">
+<div class="container"><div class="pillars">
 <div class="pillar"><b>Collect</b><span>Waste from companies, homes and communities.</span></div>
 <div class="pillar"><b>Recycle</b><span>Proper disposal and recovery of recyclable materials.</span></div>
 <div class="pillar"><b>Advocate</b><span>Public awareness on the dangers of improper disposal.</span></div>
 <div class="pillar"><b>Train</b><span>Capacity building for members and recyclers.</span></div>
 </div></div>
-<section class="sec"><div class="wrap split">
+<section class="section"><div class="container split">
 <div><p class="eyebrow">Welcome</p><h2>Welcome to ASWRA</h2>
 <p>The Anambra Waste Recyclers Association is committed to advancing sustainable waste management, responsible recycling, environmental protection and economic opportunities for recyclers and recycling enterprises across Anambra State.</p>
 <p>We welcome collectors, recyclers, aggregators, cooperatives, community groups and partners who want to build an organised, productive and sustainable recycling sector.</p>
-<a class="btn g" href="#what-we-do">See what we do</a></div>
-<div class="todo"><span class="tag">Placeholder</span><h3>Message from the State Coordinator</h3><p style="color:var(--mute)">The State Coordinator's personal welcome message, name and photograph will appear here once supplied by ASWRA.</p></div>
+<a class="btn green" href="about.html">About ASWRA</a></div>
+<div class="todo"><span class="tag">Placeholder</span><h3>Message from the State Coordinator</h3><p class="muted">The personal welcome message and photograph of the State Coordinator, Mr Oscar Raymond, will appear here once supplied by ASWRA.</p></div>
 </div></section>
-<section class="sec alt"><div class="wrap">
-<p class="eyebrow">What we do</p><h2>Practical work for a cleaner Anambra</h2>
+<section class="section alt"><div class="container"><p class="eyebrow">What we do</p><h2>Practical work for a cleaner Anambra</h2>
 <div class="grid">
 <div class="card"><span class="num">1</span><h3>Waste collection</h3><p>Collection from companies, homes and communities for proper disposal and recycling.</p></div>
 <div class="card"><span class="num">2</span><h3>Advocacy</h3><p>Telling people the disadvantages of improper waste disposal.</p></div>
 <div class="card"><span class="num">3</span><h3>Training and empowerment</h3><p>Equipping members with skills in recycling and waste management.</p></div>
 <div class="card"><span class="num">4</span><h3>A clean, healthy state</h3><p>Working with communities and partners to keep Anambra State clean.</p></div>
-</div><a class="btn g" href="#what-we-do">Read more</a></div></section>
-<section class="sec band"><div class="wrap"><p class="eyebrow" style="color:var(--leaf)">Every year</p><h2>Days we celebrate</h2>
+</div><a class="btn green" href="activities.html">Read more</a></div></section>
+<section class="section band"><div class="container"><p class="eyebrow">Every year</p><h2>Days we celebrate</h2>
 <p>ASWRA marks World Clean Up Day, World Environment Day and other environmental days each year.</p>
-<div class="cel" id="cel"></div></div></section>
-<section class="sec"><div class="wrap split"><div><h2>Be part of the community</h2><p>ASWRA is open to individual recyclers, recycling businesses, cooperatives, institutions and partners. Contact the State Secretariat to learn how to join.</p></div><div class="cta" style="margin:0"><a class="btn g" href="#contact">Contact the secretariat</a><a class="btn g" href="https://wa.me/2347085379538" target="_blank" rel="noopener">Chat on WhatsApp</a></div></div></section>
-</div>
-
-<!-- ABOUT -->
-<div data-p="about" data-t="About Us" hidden>
-<section class="sec"><div class="wrap"><p class="eyebrow">About Us</p><h1>Who we are</h1>
-<p class="lead">The Anambra State Waste Recyclers Association (ASWRA) is a membership association that promotes responsible waste recovery, recycling and sustainable waste management in Anambra State.</p>
-<p>ASWRA gives waste collectors, recyclers, aggregators, recycling enterprises and cooperatives one platform for training, market access, advocacy and partnerships. It recognises the important contribution of informal collectors, community recyclers and small recycling businesses, and works with government agencies, producers, development partners and communities.</p>
-<div class="grid"><div class="card"><h3>Vision</h3><p>To become a leading, credible and inclusive association advancing sustainable waste management, responsible recycling, environmental protection and economic empowerment in Anambra State.</p></div>
-<div class="card"><h3>Mission</h3><p>To organise, empower and support waste recyclers and recycling enterprises through capacity development, digital innovation, cooperative initiatives, strategic partnerships, market access and policy advocacy for a cleaner environment and a sustainable circular economy.</p></div></div></div></section>
-<section class="sec alt"><div class="wrap"><h2>Our core values</h2><div class="grid">
-<div class="card"><h3>Unity</h3><p>Cooperation, inclusion and peaceful coexistence among members.</p></div>
-<div class="card"><h3>Environmental responsibility</h3><p>Cleaner communities and sustainable resource recovery.</p></div>
-<div class="card"><h3>Economic empowerment</h3><p>Sustainable livelihoods and enterprise development.</p></div>
-<div class="card"><h3>Accountability</h3><p>Responsible use of resources and accurate reporting.</p></div>
-<div class="card"><h3>Partnership</h3><p>Constructive relationships with institutions, businesses and communities.</p></div>
-<div class="card"><h3>Sustainability</h3><p>Long term environmental, social and economic benefit.</p></div></div></div></section>
-<section class="sec"><div class="wrap split"><div><h2>Our objectives</h2><ul class="chk">
-<li>Organise and coordinate recyclers and recycling enterprises in Anambra State.</li>
-<li>Promote responsible collection, sorting, aggregation and recycling.</li>
-<li>Reduce pollution through environmentally responsible waste management.</li>
-<li>Share information on recycling markets, technologies and opportunities.</li>
-<li>Provide training, workshops and technical assistance.</li>
-<li>Link members to legitimate markets, off takers and partners.</li></ul></div>
-<div><h2 style="visibility:hidden" aria-hidden="true">.</h2><ul class="chk">
-<li>Encourage cooperatives for savings, credit and enterprise development.</li>
-<li>Advocate policies that improve welfare, safety and the business environment.</li>
-<li>Discourage stolen materials, child labour and exploitation.</li>
-<li>Promote occupational safety and health protection.</li>
-<li>Encourage participation of women, young people and community groups.</li></ul></div></div></section>
-<section class="sec alt"><div class="wrap"><h2>Who can join</h2><div class="grid">
-<div class="card"><h3>Individual recyclers</h3><p>Collectors, recovery workers, independent recyclers and aggregators.</p></div>
-<div class="card"><h3>Recycling businesses</h3><p>Small and medium recycling and material recovery enterprises.</p></div>
-<div class="card"><h3>Cooperatives</h3><p>Registered waste sector thrift and multipurpose cooperatives.</p></div>
-<div class="card"><h3>Institutions</h3><p>NGOs, community and environmental organisations.</p></div>
-<div class="card"><h3>Strategic partners</h3><p>Recycling companies, producers and development partners.</p></div></div>
-<a class="btn g" href="#contact">How to join</a></div></section>
-</div>
-
-<!-- WHAT WE DO -->
-<div data-p="what-we-do" data-t="What We Do" hidden>
-<section class="sec"><div class="wrap"><p class="eyebrow">What We Do</p><h1>Our work</h1>
-<p class="lead">ASWRA is into waste management: collecting, recycling, educating and training, so that Anambra State stays clean and healthy.</p>
-<div class="grid">
-<div class="card"><span class="num">1</span><h3>Waste collection</h3><p>We collect waste from companies, homes and communities for proper disposal and recycling.</p></div>
-<div class="card"><span class="num">2</span><h3>Advocacy and awareness</h3><p>We tell people the disadvantages of not disposing of waste properly, and speak for recyclers on harassment, improper levies and unfair treatment.</p></div>
-<div class="card"><span class="num">3</span><h3>Training and empowerment</h3><p>We train and empower members on proper recycling and waste management, including safe working practices.</p></div>
-<div class="card"><span class="num">4</span><h3>A clean and healthy Anambra</h3><p>We work with communities, government and partners to keep Anambra State clean and healthy.</p></div></div></div></section>
-<section class="sec alt"><div class="wrap"><h2>How ASWRA supports recyclers</h2><div class="grid">
-<div class="card"><h3>Market and off taker links</h3><p>Connections to recognised buyers and aggregation arrangements with transparent terms.</p></div>
-<div class="card"><h3>EPR opportunities</h3><p>Access to producer funded recycling programmes for eligible materials such as PET plastics and used beverage cans.</p></div>
-<div class="card"><h3>Health insurance help</h3><p>Information and assistance with applications to programmes such as the Anambra State Health Insurance Agency (ASHIA).</p></div>
-<div class="card"><h3>Cooperative and thrift</h3><p>Savings and credit through an authorised, ASWRA affiliated cooperative.</p></div></div>
-<p class="note">All support is subject to eligibility and programme rules. Membership does not guarantee loans, grants, contracts or admission into any third party programme.</p></div></section>
-<section class="sec"><div class="wrap"><h2>Annual celebrations</h2><p>Each year ASWRA marks World Clean Up Day, World Environment Day and other environmental days through clean ups and awareness activities.</p><a class="btn g" href="#contact">Partner with us</a></div></section>
-</div>
-
-<!-- LEADERSHIP -->
-<div data-p="leadership" data-t="Leadership" hidden>
-<section class="sec"><div class="wrap"><p class="eyebrow">Leadership</p><h1>Our leadership</h1>
-<p class="lead">ASWRA is led by a State Executive Committee committed to integrity, accountability and service to members.</p>
-<div class="todo" style="margin:20px 0"><span class="tag">Placeholder</span><p style="margin:0;color:var(--mute)">Official names, positions and photographs will be added once supplied by ASWRA. The cards below show the intended layout.</p></div>
-<div class="grid">
-<div class="lcard"><svg class="av" aria-hidden="true"><use href="#u"/></svg><h3>Name to be provided</h3><p>State Coordinator</p><span class="tag">Placeholder</span></div>
-<div class="lcard"><svg class="av" aria-hidden="true"><use href="#u"/></svg><h3>Name to be provided</h3><p>Position to be confirmed</p><span class="tag">Placeholder</span></div>
-<div class="lcard"><svg class="av" aria-hidden="true"><use href="#u"/></svg><h3>Name to be provided</h3><p>Position to be confirmed</p><span class="tag">Placeholder</span></div>
-<div class="lcard"><svg class="av" aria-hidden="true"><use href="#u"/></svg><h3>Name to be provided</h3><p>Position to be confirmed</p><span class="tag">Placeholder</span></div>
-<div class="lcard"><svg class="av" aria-hidden="true"><use href="#u"/></svg><h3>Name to be provided</h3><p>Position to be confirmed</p><span class="tag">Placeholder</span></div>
-<div class="lcard"><svg class="av" aria-hidden="true"><use href="#u"/></svg><h3>Name to be provided</h3><p>Position to be confirmed</p><span class="tag">Placeholder</span></div></div></div></section>
-<section class="sec alt"><div class="wrap"><h2>Principles our executives pledge to uphold</h2>
-<p>Every State Executive Committee member signs a code of conduct built on these principles.</p>
-<div class="chips"><span>Loyalty</span><span>Integrity</span><span>Respect</span><span>Commitment</span><span>Professionalism</span><span>Disclosure of interests</span><span>Confidentiality</span><span>Discipline</span><span>Service</span><span>Sustainability</span></div></div></section>
-</div>
-
-<!-- CONTACT -->
-<div data-p="contact" data-t="Contact" hidden>
-<section class="sec"><div class="wrap"><p class="eyebrow">Contact Us</p><h1>Get in touch</h1>
-<p class="lead">Reach the ASWRA State Secretariat for membership enquiries, training schedules and programme information.</p>
-<div class="split">
-<div class="card"><h3>State Secretariat</h3><p>Staff Development Centre, behind Old Government House, Awka, Anambra State, Nigeria.</p>
-<p><b>Phone</b><br><a href="tel:07085379538">07085379538</a><br><a href="tel:08163193136">08163193136</a><br><a href="tel:07030236633">07030236633</a></p>
-<p><b>Email</b><br><a href="mailto:aswrahome@gmail.com">aswrahome@gmail.com</a></p>
-<div class="row"><a class="btn g s" href="https://wa.me/2347085379538" target="_blank" rel="noopener">WhatsApp</a><a class="btn g s" href="https://www.facebook.com/share/1J9RiHkSam/" target="_blank" rel="noopener">Facebook</a><a class="btn g s" href="tel:07085379538">Call</a></div></div>
-<form class="card" id="cf"><h3>Send a message</h3><label for="cn">Your name</label><input id="cn" required autocomplete="name"><label for="cm">Message</label><textarea id="cm" rows="4" required></textarea><button class="btn g" style="margin-top:14px" type="submit">Send on WhatsApp</button><p class="note" style="margin-top:10px">This opens WhatsApp with your message ready to send.</p></form></div>
-<h2 style="margin-top:40px">How to join</h2>
-<div class="grid"><div class="card"><span class="num">1</span><h3>Contact the secretariat</h3><p>Ask for the membership form for your category.</p></div>
-<div class="card"><span class="num">2</span><h3>Submit your details</h3><p>Provide your information and the documents required for your category.</p></div>
-<div class="card"><h3 style="margin-top:6px">Complete induction</h3><p>Attend the Recyclers Academy induction or an approved equivalent.</p></div>
-<div class="card"><h3 style="margin-top:6px">Pay official fees only</h3><p>Use only officially approved channels and keep your receipt.</p></div></div>
-<p class="note">Verify any request for money, personal information or documents before acting on it.</p></div></section>
-</div>
+<div class="cel" id="celebrations"></div></div></section>
+<section class="section"><div class="container split"><div><h2>Join the community</h2><p>ASWRA is open to individual recyclers, recycling businesses, cooperatives, institutions and partners. Apply online in a few minutes, then track your application with your reference number.</p></div>
+<div class="cta"><a class="btn green" href="membership.html">Learn about membership</a><a class="btn outline-dark" href="contact.html">Contact the secretariat</a></div></div></section>
 </main>
-
-<a class="wab" href="https://wa.me/2347085379538" target="_blank" rel="noopener" aria-label="Chat with ASWRA on WhatsApp">💬 WhatsApp</a>
-
-<footer><div class="wrap"><div class="fg">
+<!--FOOTER-->
+<footer class="site-footer"><div class="container"><div class="foot-grid">
 <div><h3>ASWRA</h3><p>Anambra State Waste Recyclers Association. Turning waste into wealth.</p></div>
-<div><h3>Pages</h3><div class="l"><a href="#home">Home</a><a href="#about">About Us</a><a href="#what-we-do">What We Do</a><a href="#leadership">Leadership</a><a href="#contact">Contact</a></div></div>
-<div><h3>Contact</h3><div class="l"><span>Staff Development Centre, Awka</span><a href="tel:07085379538">07085379538</a><a href="mailto:aswrahome@gmail.com">aswrahome@gmail.com</a><a href="https://www.facebook.com/share/1J9RiHkSam/" target="_blank" rel="noopener">Facebook</a></div></div></div>
-<p style="margin:24px 0 0">© Anambra State Waste Recyclers Association (ASWRA). Review version: items marked Placeholder await official content.</p></div></footer>
-
-<script>
-const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const CEL=[{n:"World Environment Day",s:"5 June every year",d:y=>new Date(y,5,5)},{n:"World Clean Up Day",s:"Third Saturday of September",d:y=>{const f=new Date(y,8,1);return new Date(y,8,1+(6-f.getDay()+7)%7+14)}}];
-const nxt=c=>{const y=new Date().getFullYear();let d=c.d(y);if(d.getTime()+864e5<Date.now())d=c.d(y+1);return d};
-$("#cel").innerHTML=CEL.map(c=>{const d=nxt(c);return `<div><h3 style="color:#fff;margin:0">${c.n}</h3><p style="margin:4px 0 0">${c.s}. Next: ${d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</p><span class="cd" data-t="${d.getTime()+288e5}"></span></div>`}).join("");
-function tick(){$$(".cd").forEach(e=>{const s=Math.max(0,Math.floor((+e.dataset.t-Date.now())/1000));e.textContent=Math.floor(s/86400)+" days "+Math.floor(s%86400/3600)+"h "+Math.floor(s%3600/60)+"m"})}
-tick();setInterval(tick,30000);
-const menu=$("#menu"),bg=$("#bg");
-const setMenu=o=>{menu.classList.toggle("open",o);bg.setAttribute("aria-expanded",o);bg.setAttribute("aria-label",o?"Close menu":"Open menu");bg.textContent=o?"✕":"☰"};
-bg.onclick=()=>setMenu(!menu.classList.contains("open"));
-menu.addEventListener("click",e=>{if(e.target.closest("a"))setMenu(false)});
-addEventListener("keydown",e=>{if(e.key==="Escape")setMenu(false)});
-function route(first){let p=location.hash.slice(1)||"home";if(!$('[data-p="'+p+'"]'))p="home";
-$$("[data-p]").forEach(s=>s.hidden=s.dataset.p!==p);
-$$("nav a:not(.btn)").forEach(a=>{a.getAttribute("href")==="#"+p?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current")});
-document.title=(p==="home"?"":$('[data-p="'+p+'"]').dataset.t+" | ")+"ASWRA | Anambra State Waste Recyclers Association";
-scrollTo(0,0);if(!first)$("#main").focus({preventScroll:true})}
-addEventListener("hashchange",()=>route());
-$("#cf").onsubmit=e=>{e.preventDefault();open("https://wa.me/2347085379538?text="+encodeURIComponent("From "+$("#cn").value.trim()+": "+$("#cm").value.trim()),"_blank","noopener");e.target.reset()};
-route(true);
-</script>
+<div><h3>Pages</h3><div class="foot-links">
+<a href="index.html">Home</a>
+<a href="about.html">About Us</a>
+<a href="activities.html">What We Do</a>
+<a href="leadership.html">Leadership</a>
+<a href="membership.html">Membership</a>
+<a href="contact.html">Contact</a>
+<a href="application-status/">Check application status</a>
+<a href="privacy.html">Privacy notice</a>
+</div></div>
+<div><h3>State Secretariat</h3><div class="foot-links">
+<span>Staff Development Centre, Behind Old Government House, Awka, Anambra State, Nigeria</span>
+<a href="tel:07085379538">07085379538</a><a href="tel:08163193136">08163193136</a><a href="tel:07030236633">07030236633</a>
+<a href="mailto:aswrahome@gmail.com">aswrahome@gmail.com</a>
+<a href="https://www.facebook.com/share/1J9RiHkSam/" target="_blank" rel="noopener">Facebook</a>
+</div></div></div>
+<p class="copy">&copy; <span id="year">2026</span> Anambra State Waste Recyclers Association (ASWRA)</p></div></footer>
+<a class="wa-float" href="https://wa.me/2347085379538" target="_blank" rel="noopener" aria-label="Chat with ASWRA on WhatsApp">WhatsApp</a>
+<!--/FOOTER-->
+<script src="assets/js/site.js" defer></script>
 </body>
 </html>

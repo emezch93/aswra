@@ -1,0 +1,198 @@
+
+1. Health and unauthenticated access
+  PASS health endpoint returns ok
+  PASS health exposes nothing but status
+  PASS GET /api/admin/dashboard rejects anonymous users (401)
+  PASS GET /api/admin/applications rejects anonymous users (401)
+  PASS GET /api/admin/applications/1 rejects anonymous users (401)
+  PASS GET /api/admin/applications/1/history rejects anonymous users (401)
+  PASS PATCH /api/admin/applications/1/status rejects anonymous users (401)
+  PASS POST /api/admin/applications/1/reviews rejects anonymous users (401)
+  PASS POST /api/admin/applications/1/decision rejects anonymous users (401)
+  PASS POST /api/admin/applications/1/communications rejects anonymous users (401)
+  PASS PATCH /api/admin/communications/1 rejects anonymous users (401)
+  PASS POST /api/admin/logout rejects anonymous users (401)
+  PASS session endpoint reports unauthenticated
+
+2. One time administrator setup
+  PASS setup without token is refused
+  PASS setup with wrong token is refused
+  PASS setup rejects a weak password
+  PASS setup with correct token creates the administrator
+  PASS setup cannot be reused
+  PASS database refuses a second administrator row
+  PASS password is stored hashed (PBKDF2), not plaintext
+
+3. Login, session and cookies
+  PASS wrong password is rejected
+  PASS unknown email gives the same generic message
+  PASS correct credentials log in
+  PASS cookie is HttpOnly
+  PASS cookie is SameSite=Strict
+  PASS cookie has a lifetime (Max-Age)
+  PASS password is never returned
+  PASS session endpoint reports authenticated
+  PASS raw session token is not stored (hash only)
+
+4. Application submission and server side validation
+  PASS valid individual application is saved (201)
+  PASS response status is Pending and not Approved
+  PASS references are unique
+  PASS references are not sequential or guessable (no digits only suffix pattern)
+  PASS exact duplicate submission is refused (409)
+  PASS valid Recycling Business Members application saved
+  PASS valid Cooperative Members application saved
+  PASS valid Institutional Members application saved
+  PASS valid Strategic and Corporate Partners application saved
+  PASS organisation without contact person is rejected
+  PASS invalid email rejected
+  PASS invalid phone rejected
+  PASS +234 phone accepted
+  PASS LGA outside Anambra list rejected
+  PASS unknown category rejected
+  PASS declaration is mandatory
+  PASS privacy consent is mandatory
+  PASS age confirmation is mandatory for individuals
+  PASS select value outside options rejected
+  PASS checkbox value outside options rejected
+  PASS too short name rejected
+  PASS honeypot field rejects bots
+  PASS non JSON content type rejected (415)
+  PASS malformed JSON rejected (400)
+  PASS oversized body rejected (413)
+  PASS markup in text is accepted as plain text (escaped on output)
+  PASS SQL injection text is stored harmlessly
+  PASS applications table still exists after injection attempt
+
+5. Public status checking
+  PASS valid reference returns Pending
+  PASS public response contains only status, message and update time
+  PASS no personal data in public response
+  PASS lower case reference accepted
+  PASS unknown reference returns a safe 404
+  PASS malformed reference gives the same safe message
+  PASS SQL injection in reference is harmless
+  PASS missing reference handled
+
+6. Dashboard, search, filters, sorting, pagination
+  PASS dashboard counts come from the database
+  PASS list returns applications with required columns
+  PASS list does not expose email or phone
+  PASS search by name
+  PASS search by reference
+  PASS search by email
+  PASS filter by category
+  PASS filter by status
+  PASS empty result set handled
+  PASS sort by name ascending
+  PASS pagination
+  PASS SQL injection in search is harmless
+  PASS LIKE wildcard in search is escaped
+  PASS injected sort column is ignored
+  PASS non numeric id rejected
+  PASS unknown id returns 404
+
+7. Application detail
+  PASS detail returns full submitted information
+  PASS history starts with the submission entry
+
+8. Review workflow: approval path
+  PASS cannot approve a Pending application
+  PASS status endpoint cannot set Approved
+  PASS status endpoint cannot set Rejected
+  PASS cannot skip Under Review
+  PASS unknown status rejected
+  PASS Pending to Under Review
+  PASS private review note saved
+  PASS Requires Information needs an applicant facing message
+  PASS request additional information
+  PASS applicant sees the applicant facing message
+  PASS cannot recommend from Requires Information
+  PASS back to Under Review
+  PASS old applicant message is cleared after status change
+  PASS record recommendation to approve
+  PASS recommendation is NOT presented as approval
+  PASS decision requires explicit confirmation
+  PASS official approval recorded
+  PASS applicant sees Approved with message
+  PASS internal notes never appear publicly
+  PASS final decision cannot be reversed by status change
+  PASS final decision cannot be changed
+  PASS full history retained (submission, review, info request, recommendation, decision)
+  PASS history keeps previous status and notes
+  PASS review notes retained
+  PASS decided_at is recorded
+  PASS history cannot be edited in the database
+  PASS audit log cannot be deleted
+
+9. Review workflow: rejection path
+  PASS rejection needs a reason and explanation
+  PASS rejection reason must be a listed category
+  PASS record recommendation to reject
+  PASS rejection recommendation is not shown as Rejected
+  PASS official rejection recorded
+  PASS applicant sees Rejected and the published reason
+  PASS rejection reason stored in history
+  PASS dashboard reflects Approved and Rejected
+
+10. Manual email workflow records
+  PASS unfilled template placeholder is rejected
+  PASS empty subject rejected
+  PASS message too short rejected
+  PASS unknown message type rejected
+  PASS communication saved as Prepared, not Sent
+  PASS recipient comes from the application, not the client
+  PASS message body keeps the application reference
+  PASS cannot record a status other than Marked as Sent
+  PASS administrator can mark a message as sent
+  PASS marking twice is refused
+  PASS communication record shows Marked as Sent with a timestamp
+  PASS rejection email record saved
+  PASS additional information record saved
+
+11. CSRF and origin protection
+  PASS state change without CSRF token rejected
+  PASS state change with wrong CSRF token rejected
+  PASS cross site origin rejected even with a valid token
+  PASS missing Origin header rejected
+
+12. Static files, headers and secrets
+  PASS private file /docs/DEPLOYMENT.md is not served
+  PASS private file /migrations/0001_initial_schema.sql is not served
+  PASS private file /wrangler.toml is not served
+  PASS private file /package.json is not served
+  PASS private file /functions/_lib/auth.js is not served
+  PASS private file /scripts/secure-admin-setup.js is not served
+  PASS private file /.dev.vars is not served
+  PASS private file /.dev.vars.example is not served
+  PASS private file /tests/e2e.mjs is not served
+  PASS private file /README.md is not served
+  PASS security headers on API responses
+  PASS API responses are not cacheable
+  PASS public config exposes no secrets
+
+13. Audit log
+  PASS audit log records admin.setup
+  PASS audit log records admin.login
+  PASS audit log records admin.login_failed
+  PASS audit log records application.status
+  PASS audit log records application.recommendation
+  PASS audit log records application.decision
+  PASS audit log records application.review_note
+  PASS audit log records communication.prepared
+  PASS audit log records communication.marked_sent
+
+14. Session expiry and logout
+  PASS expired session is rejected
+  PASS idle session (3 hours) is rejected
+  PASS fresh session works
+  PASS logout succeeds
+  PASS session is invalid after logout (server side)
+
+15. Rate limiting
+  PASS login is rate limited after repeated failures (429)
+  PASS correct password also blocked while rate limited
+  PASS application submission is rate limited (429)
+  PASS status lookups are rate limited (429)
+
+Result: 166 passed, 0 failed

@@ -1,0 +1,11 @@
+# Copy to .dev.vars for local development. Never commit .dev.vars.
+# "development" only disables Turnstile on localhost. Never set it in production.
+ENVIRONMENT=development
+# Long random strings, e.g. output of: openssl rand -base64 48
+APP_SECRET=replace-with-a-long-random-string
+ADMIN_SETUP_TOKEN=replace-with-a-different-long-random-string
+# Cloudflare Turnstile keys (leave empty locally). Test keys: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET=
+# Only used by the local automated tests (npm test). Any 12+ character value.
+TEST_ADMIN_PASSWORD=
