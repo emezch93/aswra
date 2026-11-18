@@ -1,0 +1,12 @@
+# Used for local development and D1 migrations only.
+# The Cloudflare Pages project keeps its own bindings and settings in the dashboard
+# (this file deliberately has no pages_build_output_dir, so Pages ignores it).
+name = "aswra-mvp"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "aswra-membership"
+# Replace with the real ID printed by `wrangler d1 create aswra-membership`.
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+migrations_dir = "migrations"

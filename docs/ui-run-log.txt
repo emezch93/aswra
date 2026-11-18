@@ -1,0 +1,165 @@
+
+1. Public pages: availability, structure, links and assets
+  PASS / loads (200)
+  PASS / has a title, description and exactly one h1
+  PASS / has lang, skip link, main landmark and navigation
+  PASS / images have alt attributes
+  PASS / has all six primary nav links
+  PASS / has no inline scripts or style attributes (CSP safe)
+  PASS /about.html loads (200)
+  PASS /about.html has a title, description and exactly one h1
+  PASS /about.html has lang, skip link, main landmark and navigation
+  PASS /about.html images have alt attributes
+  PASS /about.html has all six primary nav links
+  PASS /about.html has no inline scripts or style attributes (CSP safe)
+  PASS /activities.html loads (200)
+  PASS /activities.html has a title, description and exactly one h1
+  PASS /activities.html has lang, skip link, main landmark and navigation
+  PASS /activities.html images have alt attributes
+  PASS /activities.html has all six primary nav links
+  PASS /activities.html has no inline scripts or style attributes (CSP safe)
+  PASS /leadership.html loads (200)
+  PASS /leadership.html has a title, description and exactly one h1
+  PASS /leadership.html has lang, skip link, main landmark and navigation
+  PASS /leadership.html images have alt attributes
+  PASS /leadership.html has all six primary nav links
+  PASS /leadership.html has no inline scripts or style attributes (CSP safe)
+  PASS /membership.html loads (200)
+  PASS /membership.html has a title, description and exactly one h1
+  PASS /membership.html has lang, skip link, main landmark and navigation
+  PASS /membership.html images have alt attributes
+  PASS /membership.html has all six primary nav links
+  PASS /membership.html has no inline scripts or style attributes (CSP safe)
+  PASS /contact.html loads (200)
+  PASS /contact.html has a title, description and exactly one h1
+  PASS /contact.html has lang, skip link, main landmark and navigation
+  PASS /contact.html images have alt attributes
+  PASS /contact.html has all six primary nav links
+  PASS /contact.html has no inline scripts or style attributes (CSP safe)
+  PASS /application-status/ loads (200)
+  PASS /application-status/ has a title, description and exactly one h1
+  PASS /application-status/ has lang, skip link, main landmark and navigation
+  PASS /application-status/ images have alt attributes
+  PASS /application-status/ has all six primary nav links
+  PASS /application-status/ has no inline scripts or style attributes (CSP safe)
+  PASS /privacy.html loads (200)
+  PASS /privacy.html has a title, description and exactly one h1
+  PASS /privacy.html has lang, skip link, main landmark and navigation
+  PASS /privacy.html images have alt attributes
+  PASS /privacy.html has all six primary nav links
+  PASS /privacy.html has no inline scripts or style attributes (CSP safe)
+  PASS /admin/ loads (200)
+  PASS /admin/ has no inline scripts or style attributes (CSP safe)
+  PASS every internal link and asset referenced by the pages resolves (200)
+  PASS contact detail "07085379538" appears on the home page footer
+  PASS contact detail "08163193136" appears on the home page footer
+  PASS contact detail "07030236633" appears on the home page footer
+  PASS contact detail "aswrahome@gmail.com" appears on the home page footer
+  PASS contact detail "Staff Development Centre" appears on the home page footer
+  PASS contact page shows the official address and numbers
+  PASS vision and mission text matches the approved wording
+  PASS membership page lists "Individual Recycler Members"
+  PASS membership page lists "Recycling Business Members"
+  PASS membership page lists "Cooperative Members"
+  PASS membership page lists "Institutional Members"
+  PASS membership page lists "Strategic and Corporate Partners"
+  PASS membership page warns that membership does not guarantee loans or grants
+  PASS membership page has the Apply for Membership button
+  PASS leadership page uses placeholders, not invented names
+
+2. Navigation behaviour
+  PASS menu is closed by default
+  PASS menu button opens the menu and updates aria-expanded
+  PASS choosing a link closes the menu
+  PASS current page is marked in navigation
+  PASS home page renders both celebration countdowns
+  PASS no script errors on the home page
+  PASS contact WhatsApp form is wired up
+
+3. Membership application form (real API)
+  PASS form renders the five category options
+  PASS details are hidden until a category is chosen
+  PASS submitting without a category shows an accessible error
+  PASS individual: asks for full name and not a contact person
+  PASS individual: shows age, connection and activity questions
+  PASS business: asks for organisation name and contact person
+  PASS business: shows business type and registration questions
+  PASS cooperative: shows cooperative type
+  PASS institutional: shows institution type and alignment
+  PASS partner: shows partner type and interest
+  PASS form does not ask for NIN, bank, ID upload or guarantor
+  PASS empty submission shows an error summary
+  PASS invalid fields are flagged with aria-invalid
+  PASS each field shows its own error message
+  PASS bad email and phone are caught in the browser
+  PASS submit button is disabled while sending (duplicate click protection)
+  PASS successful submission shows a confirmation
+  PASS confirmation shows the application reference
+  PASS confirmation tells the applicant to keep the reference and does not say approved
+  PASS confirmation links to the status page with the reference
+  PASS only one application was saved despite the double submit
+  PASS no script errors on the membership page
+
+4. Application status page
+  PASS malformed reference shows a helpful message
+  PASS unknown reference shows a safe not found message
+  PASS valid reference shows status and plain language explanation
+  PASS status page shows no personal details
+  PASS reference from the link is looked up automatically
+
+5. Administrator dashboard (real API and database)
+  PASS setup: application with markup in its name saved
+  PASS anonymous visitor sees only the login form
+  PASS wrong password shows an error and stays on login
+  PASS correct password opens the dashboard
+  PASS dashboard shows statistics from the database
+  PASS applications table shows rows with the required columns
+  PASS markup in an applicant name is displayed as text and never executed
+  PASS search narrows the table
+  PASS empty state is shown when nothing matches
+  PASS View opens the application detail
+  PASS detail shows full submitted information
+  PASS detail shows the reference and current status
+  PASS private and public message fields are clearly labelled
+  PASS no decision controls while the application is only Pending
+
+6. Review controls in the dashboard
+  PASS administrator can move the application to Under Review
+  PASS official decision controls appear after review starts
+  PASS recommendation is recorded and status changes to Recommended for Approval
+  PASS history timeline lists the submission, status change and recommendation
+  PASS internal note is marked Private in the history
+
+7. Email composer and communication records
+  PASS approval template has the approved congratulatory subject
+  PASS approval template is populated with the applicant name and reference
+  PASS approval template does not promise cards, funds or grants
+  PASS rejection template contains a reason placeholder until completed
+  PASS additional information template has the approved subject and request text
+  PASS administrator's specific request is inserted into the message
+  PASS administrator can edit and preview the final email
+  PASS an unfinished template cannot be saved or opened
+  PASS Save and open email opens a mailto link with recipient, subject and message
+  PASS the record is shown as Prepared and not as sent
+  PASS copy fallback copies the full message
+  PASS Open email on a saved record uses the stored message
+  PASS opening the email app did NOT mark it as sent
+  PASS administrator can manually mark it as sent
+  PASS page explains that this is a manual record and not proof of delivery
+  PASS page explains the email app must be set up and the system never sends email
+
+8. Official decision in the dashboard
+  PASS rejection reveals the reason category field
+  PASS official approval changes the status to Approved
+  PASS decision controls are removed after the final decision
+  PASS administrator can return to the list
+  PASS applicant now sees Approved on the public status endpoint
+
+9. Logout and session handling in the browser
+  PASS administrator email is shown and Log out is available
+  PASS logout returns to the login form
+  PASS API rejects the old session after logout
+  PASS fresh browser (no cookie) sees the login form only
+  PASS no credentials or secrets appear in the admin page source
+
+Result: 145 passed, 0 failed

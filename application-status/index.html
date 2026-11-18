@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Application Status | ASWRA</title>
+<meta name="description" content="Check the progress of your ASWRA membership application using your application reference.">
+<meta name="theme-color" content="#0f4d2a">
+<link rel="icon" href="../a.jpg" type="image/jpeg">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body data-page="status">
+<!--HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="container nav-bar">
+<a class="brand" href="../index.html"><img src="../a.jpg" alt="" width="40" height="40">ASWRA</a>
+<button class="burger" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">&#9776;</button>
+<nav class="nav" id="site-nav" aria-label="Main">
+<a data-page="home" href="../index.html">Home</a>
+<a data-page="about" href="../about.html">About Us</a>
+<a data-page="activities" href="../activities.html">What We Do</a>
+<a data-page="leadership" href="../leadership.html">Leadership</a>
+<a data-page="membership" href="../membership.html">Membership</a>
+<a data-page="contact" href="../contact.html">Contact</a>
+<a class="btn" href="../membership.html#apply">Apply for Membership</a>
+</nav></div></header>
+<!--/HEADER-->
+<main id="main" tabindex="-1">
+<section class="page-head"><div class="container"><p class="eyebrow">Membership</p><h1>Check your application status</h1><p>Enter the reference number you received when you applied.</p></div></section>
+<section class="section"><div class="container">
+<form class="form" id="status-form" novalidate><div class="field"><label for="reference">Application reference<span class="help">For example ASWRA-2026-XXXXXXXXXXXX</span></label>
+<input id="reference" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" aria-describedby="reference-err"><div class="err" id="reference-err" role="alert"></div></div>
+<button class="btn green" id="status-btn" type="submit">Check status</button></form>
+<div id="status-result" aria-live="polite"></div>
+<noscript><div class="notice err">This page needs JavaScript. Please contact the ASWRA secretariat on 07085379538.</div></noscript>
+<p class="small muted mt">Lost your reference? Contact the <a href="../contact.html">ASWRA secretariat</a>. For your privacy we cannot show application details here.</p>
+</div></section>
+</main>
+<!--FOOTER-->
+<footer class="site-footer"><div class="container"><div class="foot-grid">
+<div><h3>ASWRA</h3><p>Anambra State Waste Recyclers Association. Turning waste into wealth.</p></div>
+<div><h3>Pages</h3><div class="foot-links">
+<a href="../index.html">Home</a>
+<a href="../about.html">About Us</a>
+<a href="../activities.html">What We Do</a>
+<a href="../leadership.html">Leadership</a>
+<a href="../membership.html">Membership</a>
+<a href="../contact.html">Contact</a>
+<a href="../application-status/">Check application status</a>
+<a href="../privacy.html">Privacy notice</a>
+</div></div>
+<div><h3>State Secretariat</h3><div class="foot-links">
+<span>Staff Development Centre, Behind Old Government House, Awka, Anambra State, Nigeria</span>
+<a href="tel:07085379538">07085379538</a><a href="tel:08163193136">08163193136</a><a href="tel:07030236633">07030236633</a>
+<a href="mailto:aswrahome@gmail.com">aswrahome@gmail.com</a>
+<a href="https://www.facebook.com/share/1J9RiHkSam/" target="_blank" rel="noopener">Facebook</a>
+</div></div></div>
+<p class="copy">&copy; <span id="year">2026</span> Anambra State Waste Recyclers Association (ASWRA)</p></div></footer>
+<a class="wa-float" href="https://wa.me/2347085379538" target="_blank" rel="noopener" aria-label="Chat with ASWRA on WhatsApp">WhatsApp</a>
+<!--/FOOTER-->
+<script src="../assets/js/site.js" defer></script>
+<script type="module" src="../assets/js/status.js"></script>
+</body>
+</html>
