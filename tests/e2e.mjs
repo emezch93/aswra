@@ -292,9 +292,14 @@ for (let i = 0; i < 6; i++) last = await call("POST", "/api/admin/login", { body
 check("login is rate limited after repeated failures (429)", last.status === 429 && !!last.headers.get("retry-after"));
 r = await call("POST", "/api/admin/login", { body: ADMIN, ip: lip }); check("correct password also blocked while rate limited", r.status === 429);
 resetLimits();
-const aip = nextIp(); let lastA;
-for (let i = 0; i < 7; i++) lastA = await call("POST", "/api/applications", { body: valid({ email: `rl${i}@example.com`, applicantName: "Rate Limit " + i }), ip: aip });
-check("application submission is rate limited (429)", lastA.status === 429);
+const aip = nextIp(); let lastA; let acceptedA = 0;
+for (let i = 0; i < 25; i++) {
+  lastA = await call("POST", "/api/applications", { body: valid({ email: `shared${i}@example.com`, applicantName: "Shared Network Applicant " + i }), ip: aip });
+  if (lastA.status === 201) acceptedA++;
+}
+check("25 separate applicants can submit from one shared internet connection", acceptedA === 25, `accepted=${acceptedA}`);
+for (let i = 25; i < 31; i++) lastA = await call("POST", "/api/applications", { body: valid({ email: `rl${i}@example.com`, applicantName: "Rate Limit " + i }), ip: aip });
+check("application submission is rate limited only after 30 verified submissions per hour (429)", lastA.status === 429);
 resetLimits();
 const sip = nextIp(); let lastS;
 for (let i = 0; i < 32; i++) lastS = await call("GET", "/api/application-status?reference=ASWRA-2026-AAAAAAAAAAAA", { ip: sip });
