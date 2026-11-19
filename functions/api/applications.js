@@ -6,13 +6,16 @@ import { validateApplication } from "../_lib/validate.js";
 // POST /api/applications : public membership application
 export const onRequestPost = handle(async ({ request, env }) => {
   requireSecret(env);
-  const ip = await ipHash(env, request);
-  await rateLimit(env, `apply:h:${ip}`, 5, 3600);
-  await rateLimit(env, `apply:d:${ip}`, 15, 86400);
-
   const body = await readJson(request, 20000);
   if (body.website) throw new ApiError(400, "The submission could not be processed.", "rejected"); // honeypot
+  // Verify first: incomplete/failed CAPTCHA attempts do not consume the legitimate applicant allowance.
   await verifyTurnstile(env, request, body.turnstileToken);
+
+  // A shared office/community connection can submit many genuine applications.
+  // These limits apply only after successful CAPTCHA verification.
+  const ip = await ipHash(env, request);
+  await rateLimit(env, `apply:h:${ip}`, 30, 3600);
+  await rateLimit(env, `apply:d:${ip}`, 100, 86400);
 
   const v = validateApplication(body);
   if (!v.ok) throw new ApiError(422, "Please correct the highlighted fields.", "validation", { fields: v.errors });
