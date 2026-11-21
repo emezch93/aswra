@@ -15,15 +15,15 @@ export const onRequestGet = withAdmin(async ({ request, env }) => {
   const size = Math.min(50, Math.max(5, parseInt(p.get("pageSize"), 10) || 20));
   const page = Math.max(1, parseInt(p.get("page"), 10) || 1);
 
-  const where = [], binds = [];
+  const where = ["archived_at IS NULL"], binds = [];
   if (q) {
-    const like = `%${q.replace(/[\\%_]/g, "\\$&")}%`;
-    where.push("(reference LIKE ? ESCAPE '\\' OR applicant_name LIKE ? ESCAPE '\\' OR email LIKE ? ESCAPE '\\' OR phone LIKE ? ESCAPE '\\' OR lga LIKE ? ESCAPE '\\')");
+    const like = `%${q.replace(/[\\\\%_]/g, "\\\\$&")}%`;
+    where.push("(reference LIKE ? ESCAPE '\\\\' OR applicant_name LIKE ? ESCAPE '\\\\' OR email LIKE ? ESCAPE '\\\\' OR phone LIKE ? ESCAPE '\\\\' OR lga LIKE ? ESCAPE '\\\\')");
     binds.push(like, like, like, like, like);
   }
   if (STATUSES.includes(status)) { where.push("status = ?"); binds.push(status); }
   if (CATEGORIES.some((c) => c.label === category)) { where.push("category = ?"); binds.push(category); }
-  const W = where.length ? `WHERE ${where.join(" AND ")}` : "";
+  const W = `WHERE ${where.join(" AND ")}`;
 
   const total = (await env.DB.prepare(`SELECT COUNT(*) AS c FROM applications ${W}`).bind(...binds).first()).c;
   const { results } = await env.DB.prepare(
