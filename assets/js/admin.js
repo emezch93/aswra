@@ -51,7 +51,7 @@ function showLogin(message) {
     try { const d = await api("/login", { method: "POST", body: { email: email.value.trim(), password: pw.value } }); csrf = d.csrfToken; adminEmail = d.email; pw.value = ""; route(); }
     catch (x) { if (!x.auth) err.replaceChildren(notice(x.message)); }
   }); } },
-    h("h1", { text: "ASWRA membership admin" }), h("p", { class: "muted", text: "Authorised administrator only." }), message ? notice(message, "warn") : null, err,
+    h("h1", { text: "Anambra Waste Recyclers Association Membership Admin" }), h("p", { class: "muted", text: "Authorised administrator only." }), message ? notice(message, "warn") : null, err,
     h("div", { class: "field" }, h("label", { for: "em", text: "Email" }), email), h("div", { class: "field" }, h("label", { for: "pw", text: "Password" }), pw), btn);
   root.replaceChildren(h("main", { class: "login-wrap" }, form)); email.focus();
 }
