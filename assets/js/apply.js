@@ -66,13 +66,31 @@ function init() {
   /* ---------- Cloudflare Turnstile ---------- */
   function captchaMessage(msg) { captchaErr.textContent = msg || ""; }
   function loadScript() {
-    if (window.turnstile) return Promise.resolve();
-    if (!scriptLoading) scriptLoading = new Promise((resolve, reject) => {
-      const s = document.createElement("script");
-      s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"; s.async = true;
-      s.onload = resolve; s.onerror = () => { scriptLoading = null; reject(new Error("load")); };
-      document.head.append(s);
-    });
+    // The global can exist before the API is ready; only resolve when render() is callable.
+    if (typeof window.turnstile?.render === "function") return Promise.resolve();
+    if (!scriptLoading) {
+      scriptLoading = new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        s.async = true;
+        // Prevent Cloudflare Rocket Loader from reordering or delaying the Turnstile API.
+        s.setAttribute("data-cfasync", "false");
+        s.onload = () => {
+          const started = Date.now();
+          const waitUntilReady = () => {
+            if (typeof window.turnstile?.render === "function") return resolve();
+            if (Date.now() - started >= 10000) return reject(new Error("Turnstile API did not become ready"));
+            window.setTimeout(waitUntilReady, 50);
+          };
+          waitUntilReady();
+        };
+        s.onerror = () => reject(new Error("Turnstile script failed to load"));
+        document.head.append(s);
+      }).catch((error) => {
+        scriptLoading = null;
+        throw error;
+      });
+    }
     return scriptLoading;
   }
   function prepareCaptcha() {
@@ -84,14 +102,24 @@ function init() {
     if (widgetId !== null) return;                 // render exactly once
     widgetId = -1;                                  // mark as in progress
     loadScript().then(() => {
-      widgetId = window.turnstile.render(widget, {
-        sitekey: cfg.turnstileSiteKey, action: cfg.turnstileAction || "membership_application", theme: "light", retry: "auto", "refresh-expired": "auto",
-        callback: (t) => { token = t; captchaMessage(""); },
-        "expired-callback": () => { token = ""; captchaMessage("The verification expired. Please complete it again."); },
-        "timeout-callback": () => { token = ""; captchaMessage("The verification timed out. Please complete it again."); },
-        "error-callback": (code) => { token = ""; captchaMessage(`The verification widget reported a problem${code ? ` (code ${code})` : ""}. Reload the page. If it keeps happening, contact the ASWRA secretariat.`); return true; },
-      });
-    }).catch(() => { widgetId = null; captchaMessage("The verification could not be loaded. Check your connection, turn off any content blocker for this site, then reload the page."); });
+      try {
+        widgetId = window.turnstile.render(widget, {
+          sitekey: cfg.turnstileSiteKey, action: cfg.turnstileAction || "membership_application", theme: "light", retry: "auto", "refresh-expired": "auto",
+          callback: (t) => { token = t; captchaMessage(""); },
+          "expired-callback": () => { token = ""; captchaMessage("The verification expired. Please complete it again."); },
+          "timeout-callback": () => { token = ""; captchaMessage("The verification timed out. Please complete it again."); },
+          "error-callback": (code) => { token = ""; captchaMessage(`The verification widget reported a problem${code ? ` (code ${code})` : ""}. Reload the page. If it keeps happening, contact the ASWRA secretariat.`); return true; },
+        });
+      } catch (error) {
+        widgetId = null;
+        captchaMessage("The verification widget could not be initialized. Please reload the page. If it keeps happening, contact the ASWRA secretariat.");
+        console.error("ASWRA Turnstile initialization failed:", error);
+      }
+    }).catch((error) => {
+      widgetId = null;
+      captchaMessage("The verification could not be loaded. Check your connection, turn off any content blocker for this site, then reload the page.");
+      console.error("ASWRA Turnstile script loading failed:", error);
+    });
   }
   function resetCaptcha() { token = ""; if (window.turnstile && widgetId !== null && widgetId !== -1) { try { window.turnstile.reset(widgetId); } catch { /* widget already gone */ } } }
 
