@@ -17,17 +17,17 @@ export const onRequestGet = withAdmin(async ({ request, env }) => {
 
   const where = ["archived_at IS NULL"], binds = [];
   if (q) {
-    const like = `%${q.replace(/[\\\\%_]/g, "\\\\$&")}%`;
-    where.push("(reference LIKE ? ESCAPE '\\\\' OR applicant_name LIKE ? ESCAPE '\\\\' OR email LIKE ? ESCAPE '\\\\' OR phone LIKE ? ESCAPE '\\\\' OR lga LIKE ? ESCAPE '\\\\')");
+    const like = \`%\${q.replace(/[\\%_]/g, "\\\\$&")}%\`;
+    where.push("(reference LIKE ? ESCAPE '\\' OR applicant_name LIKE ? ESCAPE '\\' OR email LIKE ? ESCAPE '\\' OR phone LIKE ? ESCAPE '\\' OR lga LIKE ? ESCAPE '\\')");
     binds.push(like, like, like, like, like);
   }
   if (STATUSES.includes(status)) { where.push("status = ?"); binds.push(status); }
   if (CATEGORIES.some((c) => c.label === category)) { where.push("category = ?"); binds.push(category); }
-  const W = `WHERE ${where.join(" AND ")}`;
+  const W = \`WHERE \${where.join(" AND ")}\`;
 
-  const total = (await env.DB.prepare(`SELECT COUNT(*) AS c FROM applications ${W}`).bind(...binds).first()).c;
+  const total = (await env.DB.prepare(\`SELECT COUNT(*) AS c FROM applications \${W}\`).bind(...binds).first()).c;
   const { results } = await env.DB.prepare(
-    `SELECT id, reference, applicant_name, category, status, submitted_at FROM applications ${W} ORDER BY ${sort} ${dir}, id DESC LIMIT ? OFFSET ?`
+    \`SELECT id, reference, applicant_name, category, status, submitted_at FROM applications \${W} ORDER BY \${sort} \${dir}, id DESC LIMIT ? OFFSET ?\`
   ).bind(...binds, size, (page - 1) * size).all();
   return json({
     items: results.map((r) => ({ id: r.id, reference: r.reference, name: r.applicant_name, category: r.category, status: r.status, submittedAt: r.submitted_at })),
