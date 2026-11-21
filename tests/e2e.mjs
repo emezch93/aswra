@@ -48,7 +48,7 @@ async function submit(over, ip = nextIp()) { return call("POST", "/api/applicati
 section("1. Health and unauthenticated access");
 let r = await call("GET", "/api/health");
 check("health endpoint returns ok", r.status === 200 && r.data.status === "ok");
-check("health exposes nothing but status", Object.keys(r.data).join() === "status");
+check("health reports only non-secret dependency flags", Object.keys(r.data).sort().join() === "checks,status" && Object.keys(r.data.checks).sort().join() === "appSecretConfigured,databaseConnected,turnstileSecretConfigured,turnstileSiteKeyConfigured" && !JSON.stringify(r.data).match(/secret-value|password|token/i));
 for (const [m, p] of [["GET", "/api/admin/dashboard"], ["GET", "/api/admin/applications"], ["GET", "/api/admin/applications/1"], ["GET", "/api/admin/applications/1/history"], ["PATCH", "/api/admin/applications/1/status"], ["POST", "/api/admin/applications/1/reviews"], ["POST", "/api/admin/applications/1/decision"], ["POST", "/api/admin/applications/1/communications"], ["PATCH", "/api/admin/communications/1"], ["POST", "/api/admin/logout"], ["GET", "/api/admin/diagnostics"], ["POST", "/api/admin/diagnostics"]]) {
   r = await call(m, p, { body: {} });
   check(`${m} ${p} rejects anonymous users (401)`, r.status === 401, r.status);
