@@ -97,7 +97,7 @@ Push your branch. Cloudflare builds a preview URL (Deployments tab). Test it (st
 
 ## 10. Verify the deployment
 
-1. `/api/health` returns `{"status":"ok"}`.
+1. `/api/health` returns database status plus non-secret readiness flags for `APP_SECRET` and both Turnstile keys. All values must be configured in the active deployment environment.
 2. Every page loads; `/does-not-exist` shows the branded 404 page; `/docs/README.md` and `/wrangler.toml` return 404.
 3. Open `/membership#apply`, choose a category, solve the Turnstile check and submit a clearly fake test application. You get a reference like `ASWRA-2026-XXXXXXXXXXXX`.
 4. `/application-status/` with that reference shows **Pending**.
@@ -114,7 +114,7 @@ Push your branch. Cloudflare builds a preview URL (Deployments tab). Test it (st
 | `captcha_misconfigured` | Cloudflare rejected the secret. Copy it again from the widget. |
 | "Spam protection ... not set up yet" on the form | `TURNSTILE_SITE_KEY` is missing in this environment. |
 | Widget does not appear | Check the hostname is listed on the widget, disable content blockers, check the browser console for Content Security Policy messages. |
-| `/api/...` returns 500 or "not configured" | `DB` binding missing, or `APP_SECRET` not set, or migrations not applied. |
+| Admin login or membership submission returns "The service is not fully configured" (`not_configured`) | `APP_SECRET` is missing from the active Pages environment. Check Production (not just Preview), add it as a Secret, then create a new deployment. `/api/health` reports `appSecretConfigured: false` without revealing the secret. |\n| `/api/...` returns 500 or database unavailable | `DB` binding missing, or migrations not applied. Check `databaseConnected` at `/api/health`. |
 | Admin login fails for the right password | Wait 15 minutes if you hit the rate limit. Confirm the setup ran on this database (Production and Preview use separate bindings). |
 | Changed a variable but nothing changed | Redeploy; variables apply to new deployments only. |
 | Forms on `emezch93.github.io` fail | That static copy has no backend. Turn GitHub Pages off. |
