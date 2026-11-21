@@ -58,16 +58,20 @@ const SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverif
 // Dashboards often add stray spaces, line breaks or quote marks when keys are pasted. Remove them.
 export const cleanKey = (v) => String(v ?? "").trim().replace(/^["'\u201C\u2018]+|["'\u201D\u2019]+$/g, "").trim();
 
+// Accept the common alternate binding name as a compatibility fallback. The documented
+// TURNSTILE_SECRET binding remains authoritative whenever it contains a usable value.
+export const turnstileSecret = (env) => cleanKey(env.TURNSTILE_SECRET) || cleanKey(env.TURNSTILE_SECRET_KEY);
+
 // A test only override of the Siteverify address. It is IGNORED unless ENVIRONMENT=development AND the host is localhost.
 function verifyUrl(env, request) {
   return env.TURNSTILE_VERIFY_URL && env.ENVIRONMENT === "development" && isLocalhost(request) ? env.TURNSTILE_VERIFY_URL : SITEVERIFY_URL;
 }
 
-export const captchaBypassed = (env, request) => !cleanKey(env.TURNSTILE_SECRET) && env.ENVIRONMENT === "development" && isLocalhost(request);
+export const captchaBypassed = (env, request) => !turnstileSecret(env) && env.ENVIRONMENT === "development" && isLocalhost(request);
 
 // Calls Siteverify. A random idempotency_key makes the single retry safe. Throws if the service cannot be reached.
 export async function callSiteverify(env, request, token) {
-  const body = new URLSearchParams({ secret: cleanKey(env.TURNSTILE_SECRET), response: token, idempotency_key: crypto.randomUUID() });
+  const body = new URLSearchParams({ secret: turnstileSecret(env), response: token, idempotency_key: crypto.randomUUID() });
   const ip = request.headers.get("cf-connecting-ip");
   if (ip) body.set("remoteip", ip);
   let lastError;
@@ -102,7 +106,7 @@ async function logTurnstile(env, reason, codes, hostname) {
 //   misconfigured  missing/invalid secret
 //   unavailable    Cloudflare could not be reached
 export async function verifyTurnstile(env, request, token) {
-  if (!cleanKey(env.TURNSTILE_SECRET)) {
+  if (!turnstileSecret(env)) {
     if (captchaBypassed(env, request)) return;
     throw new ApiError(503, "Spam protection is not configured. Please contact ASWRA.", "captcha_unconfigured", { reason: "unconfigured" });
   }
@@ -141,7 +145,7 @@ export async function verifyTurnstile(env, request, token) {
 // Administrator diagnostics. Sends a deliberately fake token: Cloudflare answers "invalid-input-response" when the SECRET is
 // accepted and "invalid-input-secret" when it is not. Nothing is stored and no applicant data is involved.
 export async function turnstileProbe(env, request) {
-  if (!cleanKey(env.TURNSTILE_SECRET)) return { result: "no_secret", codes: [] };
+  if (!turnstileSecret(env)) return { result: "no_secret", codes: [] };
   try {
     const codes = errorCodes(await callSiteverify(env, request, "aswra-diagnostic-probe"));
     return { result: codes.some((c) => c === "invalid-input-secret" || c === "missing-input-secret") ? "secret_rejected" : "secret_accepted", codes };
