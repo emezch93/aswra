@@ -66,7 +66,7 @@ You must choose a **reason category** and write an **explanation** of at least 1
 This system **never sends email itself**. You send it from your own email app.
 
 1. Scroll to **Email to the applicant**.
-2. Choose a **message type** (approval, rejection, additional information, under review, information received, general update, clarification). A template appears with the applicant's name and reference already filled in.
+2. Choose a **message type** (acknowledge application received, approval, rejection, additional information, under review, information received, general update, clarification). A template appears with the applicant's name and reference already filled in.
 3. Where the template needs your words (for example the reason or the information needed), type them in the box and press **Put this into the message**. For rejections, you can first pick a reason category to start from.
 4. **Edit** the subject and message as you wish. Press **Preview** to see it.
 5. Press **Save and open email**. The message is saved as **Prepared** and your email app opens with the recipient, subject and message filled in. Check it and press Send in your email app.
@@ -88,3 +88,7 @@ The system will not save a message that still has a template placeholder in [squ
 - Wrong password: check the email address and try again. After several failures you must wait.
 - Forgotten password: contact the person who maintains the system (see the handover guide).
 - A decision recorded by mistake cannot be undone in the dashboard. Contact the system maintainer, who can record a correction note.
+
+## 8. System check (spam protection)
+
+On the applications screen, open **System check: spam protection (Turnstile)**. It shows whether the settings are present (never the keys themselves), lists problems to fix, and counts verification failures in the last 24 hours. The button **Ask Cloudflare to check the secret key** confirms the private key is accepted. If applicants report "Verification failed", send a screenshot of this section to the system maintainer. It is also described in `TURNSTILE_TROUBLESHOOTING.md`.

@@ -12,7 +12,7 @@ const TRANSITIONS = {
 };
 const DECISION_FROM = ["Under Review", "Recommended for Approval", "Recommended for Rejection"];
 const FINAL = ["Approved", "Rejected"];
-const TYPE_FOR_STATUS = { "Approved": "approval", "Rejected": "rejection", "Requires Information": "additional_information", "Under Review": "under_review" };
+const TYPE_FOR_STATUS = { "Pending": "acknowledgement", "Approved": "approval", "Rejected": "rejection", "Requires Information": "additional_information", "Under Review": "under_review" };
 
 const root = $("#app");
 // Opens the email app. (window.__testNavigate is only used by automated tests.)
@@ -63,6 +63,37 @@ function topbar() {
       h("button", { class: "btn outline small", type: "button", text: "Log out", onclick: async () => { try { await api("/logout", { method: "POST" }); } catch {} showLogin("You have been signed out."); } }))));
 }
 
+
+/* ---------- system check (spam protection diagnostics) ---------- */
+function systemCheck() {
+  const box = h("div", { class: "sys-body" }, h("p", { class: "muted small", text: "Open this section to check the spam protection settings." }));
+  const wrap = h("details", { class: "card sys", ontoggle: (e) => { if (e.target.open) load(); } }, h("summary", { text: "System check: spam protection (Turnstile)" }), box);
+  const yn = (v) => (v ? "Yes" : "No");
+  async function load() {
+    box.replaceChildren(h("p", { class: "loading", role: "status", text: "Checking\u2026" }));
+    try {
+      const d = await api("/diagnostics"), tsv = d.turnstile, probeOut = h("div", { role: "status" });
+      const probe = h("button", { class: "btn outline-dark small", type: "button", text: "Ask Cloudflare to check the secret key", onclick: (e) => busyBtn(e.target, async () => {
+        try {
+          const r = await api("/diagnostics", { method: "POST" });
+          const msg = { secret_accepted: ["ok", "Cloudflare accepted the secret key. (This cannot prove the site key belongs to the same widget. Check that in the Turnstile dashboard.)"], secret_rejected: ["err", "Cloudflare REJECTED the secret key. Copy the secret key again from the Turnstile widget settings."], no_secret: ["err", "No secret key is configured for this environment."], unreachable: ["warn", "Cloudflare could not be reached. Try again."] }[r.result];
+          probeOut.replaceChildren(notice(msg[1], msg[0]));
+        } catch (x) { if (!x.auth) probeOut.replaceChildren(notice(x.message)); }
+      }) });
+      box.replaceChildren(
+        dl([["Site key set", yn(tsv.siteKeyConfigured)], ["Secret key set", yn(tsv.secretConfigured)], ["Server host name", tsv.serverHostname], ["Local development bypass", yn(tsv.bypassedForLocalDevelopment)], ["App secret set", yn(d.appSecretConfigured)]]),
+        d.warnings.length ? h("div", { class: "notice warn" }, h("strong", { text: "Things to fix" }), h("ul", {}, d.warnings.map((w) => h("li", { text: w })))) : notice("No configuration problems detected.", "ok"),
+        h("div", { class: "cta" }, probe), probeOut,
+        h("h3", { text: "Verification failures in the last 24 hours" }),
+        Object.keys(d.failuresLast24Hours).length ? h("p", { class: "small", text: Object.entries(d.failuresLast24Hours).map(([k, v]) => `${k}: ${v}`).join(" \u00b7 ") }) : null,
+        h("h3", { text: "Most recent failures" }),
+        d.recentFailures.length ? h("ul", { class: "small" }, d.recentFailures.map((f) => h("li", { text: `${fmtDate(f.at)}: ${f.reason}${f.codes && f.codes.length ? ` (${f.codes.join(", ")})` : ""}${f.hostname ? ` on ${f.hostname}` : ""}` }))) : h("p", { class: "muted small", text: "None recorded." }),
+        h("p", { class: "small muted", text: "Reasons: expired = the visitor waited too long or reused a check; invalid = the check was not accepted; misconfigured = the secret key is wrong; unavailable = Cloudflare could not be reached." }));
+    } catch (e) { if (!e.auth) box.replaceChildren(notice(e.message)); }
+  }
+  return wrap;
+}
+
 /* ---------- application list ---------- */
 async function renderList() {
   const stats = h("section", { class: "stats", "aria-label": "Summary" }, h("p", { class: "loading", text: "Loading summary\u2026" }));
@@ -74,7 +105,7 @@ async function renderList() {
   const SORTS = { "submitted-desc": "Newest first", "submitted-asc": "Oldest first", "name-asc": "Name A to Z", "name-desc": "Name Z to A", "status-asc": "Status", "reference-asc": "Reference" };
   const so = h("select", { "aria-label": "Sort applications", onchange: (e) => { [filters.sort, filters.dir] = e.target.value.split("-"); load(); } }, Object.entries(SORTS).map(([v, l]) => h("option", { value: v, text: l, selected: v === `${filters.sort}-${filters.dir}` })));
   const clear = h("button", { class: "btn outline-dark small", type: "button", text: "Clear filters", onclick: () => { Object.assign(filters, { q: "", status: "", category: "", sort: "submitted", dir: "desc", page: 1 }); renderList(); } });
-  root.replaceChildren(topbar(), h("main", { class: "admin-main" }, h("h1", { text: "Applications" }), stats, h("div", { class: "filters" }, q, st, ct, so, clear), tableBox, pager));
+  root.replaceChildren(topbar(), h("main", { class: "admin-main" }, h("h1", { text: "Applications" }), stats, systemCheck(), h("div", { class: "filters" }, q, st, ct, so, clear), tableBox, pager));
 
   api("/dashboard").then((d) => {
     const card = (label, n, cls = "") => h("button", { class: `stat ${cls}`, type: "button", onclick: () => { filters.status = label === "Total" ? "" : label; filters.page = 1; renderList(); } }, h("b", { text: String(n) }), h("span", { text: label }));

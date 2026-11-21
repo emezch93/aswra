@@ -38,3 +38,4 @@ body.admin{background:#eef3ee;font-size:16px}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:200;display:grid;gap:8px;width:min(92vw,460px)}
 .toast{background:#fff;border:1px solid var(--line);border-left:6px solid var(--g);border-radius:10px;padding:12px 14px;box-shadow:0 6px 20px rgba(0,0,0,.18);font-weight:600}.toast.err{border-left-color:var(--err)}
 .tone+*{}
+.sys{margin:0 0 18px}.sys summary{cursor:pointer;font-weight:700}.sys-body{margin-top:12px}.sys-body h3{margin-top:16px}

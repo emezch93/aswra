@@ -1,7 +1,7 @@
-import { handle, json, isLocalhost } from "../_lib/http.js";
+import { handle, json } from "../_lib/http.js";
+import { captchaBypassed, cleanKey, TURNSTILE_ACTION } from "../_lib/guards.js";
 
-// Public browser configuration. Contains no secrets.
+// Public browser configuration. Contains the Turnstile SITE key (public by design) and no secrets.
 export const onRequestGet = handle(async ({ env, request }) => {
-  const bypass = !env.TURNSTILE_SECRET && env.ENVIRONMENT === "development" && isLocalhost(request);
-  return json({ turnstileSiteKey: env.TURNSTILE_SITE_KEY || null, captchaBypassed: bypass });
+  return json({ turnstileSiteKey: cleanKey(env.TURNSTILE_SITE_KEY) || null, turnstileAction: TURNSTILE_ACTION, captchaBypassed: captchaBypassed(env, request) });
 });

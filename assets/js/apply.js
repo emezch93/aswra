@@ -5,7 +5,7 @@ const root = $("#apply-root");
 if (root) init();
 
 function init() {
-  let cat = null, busy = false, token = "", cfg = { turnstileSiteKey: null, captchaBypassed: false };
+  let cat = null, busy = false, token = "", cfg = null, widgetId = null, scriptLoading = null;
   const form = h("form", { class: "form", novalidate: true, id: "apply-form", "aria-label": "Membership application" });
   const summary = h("div", { class: "summary", tabindex: "-1" });
   const picker = h("fieldset", { class: "cat-picker" }, h("legend", { text: "1. Choose your membership category" }));
@@ -14,16 +14,8 @@ function init() {
   const status = h("div", { role: "status", "aria-live": "polite", class: "small muted" });
   const submit = h("button", { class: "btn green", type: "submit", text: "Submit application" });
   const widget = h("div", { id: "turnstile" });
+  const captchaErr = h("div", { class: "err", id: "err-turnstile", role: "alert" });
   const honey = h("div", { class: "hp", "aria-hidden": "true" }, h("label", { for: "website", text: "Leave this field empty" }), h("input", { id: "website", name: "website", type: "text", tabindex: "-1", autocomplete: "off" }));
-
-  CATEGORIES.forEach((c) => picker.append(h("label", { class: "cat-option" },
-    h("input", { type: "radio", name: "category", value: c.label, onchange: () => choose(c) }), h("div", {}, h("b", { text: c.label }), h("span", { text: c.summary })))));
-  picker.append(h("div", { class: "err", id: "err-category", role: "alert" }));
-  rest.append(details, catFields, decl);
-  form.append(summary, picker, rest);
-  root.replaceChildren(form);
-
-  fetch("/api/config").then((r) => r.json()).then((c) => { cfg = c; setupCaptcha(); }).catch(() => {});
 
   function field(f, prefix = "f-") {
     const id = prefix + f.id, errEl = h("div", { class: "err", id: "err-" + f.id, role: "alert" });
@@ -39,10 +31,26 @@ function init() {
     return wrap(lab(f.label), h("input", { id, type, maxlength: f.max || 200, autocomplete: f.auto || "off", inputmode: f.type === "tel" ? "tel" : null, "aria-describedby": "err-" + f.id }));
   }
 
+  // The declaration block is built ONCE. The verification widget lives inside it and is never moved or rebuilt,
+  // because moving a rendered Turnstile iframe reloads it and invalidates its token.
+  decl.append(h("legend", { text: "4. Declaration" }), field({ id: "declaration", label: DECLARATION, type: "checkbox", required: true }, "d-"), field({ id: "privacy", label: "", type: "checkbox", required: true }, "d-"),
+    honey, h("div", { class: "field", id: "captcha-box" }, h("div", { class: "label", text: "Security check *" }), widget, captchaErr),
+    h("p", { class: "small muted", text: "Do not enter your NIN, bank details or any payment here. The ASWRA administrator will tell you if anything else is needed." }), submit, status);
+  $("span", $("#d-privacy", decl).closest(".check")).replaceChildren(`${PRIVACY_CONSENT} `, h("a", { href: "privacy.html", target: "_blank", rel: "noopener", text: "Read the privacy notice" }), ".");
+
+  CATEGORIES.forEach((c) => picker.append(h("label", { class: "cat-option" },
+    h("input", { type: "radio", name: "category", value: c.label, onchange: () => choose(c) }), h("div", {}, h("b", { text: c.label }), h("span", { text: c.summary })))));
+  picker.append(h("div", { class: "err", id: "err-category", role: "alert" }));
+  rest.append(details, catFields, decl);
+  form.append(summary, picker, rest);
+  root.replaceChildren(form);
+
+  fetch("/api/config").then((r) => r.json()).then((c) => { cfg = c; prepareCaptcha(); }).catch(() => { cfg = { turnstileSiteKey: null, captchaBypassed: false, failed: true }; prepareCaptcha(); });
+
   function choose(c) {
+    const keep = {}; $$("#apply-form [id^='c-']").forEach((e) => { keep[e.id] = e.value; }); // do not lose what was already typed
     cat = c; rest.hidden = false; clearErrors();
-    const nameLabel = c.org ? "Organisation name" : "Full name";
-    const common = [{ id: "applicantName", label: nameLabel, type: "text", required: true, max: 120, auto: c.org ? "organization" : "name" }];
+    const common = [{ id: "applicantName", label: c.org ? "Organisation name" : "Full name", type: "text", required: true, max: 120, auto: c.org ? "organization" : "name" }];
     if (c.org) common.push({ id: "contactPerson", label: "Contact person", type: "text", required: true, max: 120, auto: "name" });
     common.push(
       { id: "email", label: "Email address", type: "email", required: true, auto: "email", help: "ASWRA will use this to contact you about your application." },
@@ -50,31 +58,44 @@ function init() {
       { id: "address", label: c.org ? "Operational address" : "Residential or operational address", type: "textarea", required: true, max: 300 },
       { id: "lga", label: "Local Government Area", type: "select", required: true, options: LGAS });
     details.replaceChildren(h("legend", { text: "2. Your details" }), ...common.map((f) => field(f, "c-")));
+    for (const [id, v] of Object.entries(keep)) { const e = document.getElementById(id); if (e && v) e.value = v; }
     catFields.replaceChildren(h("legend", { text: c.org ? "3. About your organisation" : "3. About you" }), ...c.fields.map((f) => field(f)));
-    decl.replaceChildren(h("legend", { text: "4. Declaration" }),
-      field({ id: "declaration", label: DECLARATION, type: "checkbox", required: true }, "d-"),
-      field({ id: "privacy", label: "", type: "checkbox", required: true }, "d-"),
-      honey, widget,
-      h("p", { class: "small muted", text: "Do not enter your NIN, bank details or any payment here. ASWRA will tell you if anything else is needed." }),
-      submit, status);
-    const pl = $("#d-privacy").closest(".check").querySelector("span");
-    pl.replaceChildren(`${PRIVACY_CONSENT} `, h("a", { href: "privacy.html", target: "_blank", rel: "noopener", text: "Read the privacy notice" }), ".");
-    setupCaptcha();
+    prepareCaptcha();
   }
 
-  function setupCaptcha() {
-    if (!cat || widget.dataset.ready) return;
-    if (cfg.turnstileSiteKey) {
-      widget.dataset.ready = "1";
-      const s = document.createElement("script"); s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"; s.async = true;
-      s.onload = () => window.turnstile.render(widget, { sitekey: cfg.turnstileSiteKey, callback: (t) => { token = t; }, "expired-callback": () => { token = ""; } });
+  /* ---------- Cloudflare Turnstile ---------- */
+  function captchaMessage(msg) { captchaErr.textContent = msg || ""; }
+  function loadScript() {
+    if (window.turnstile) return Promise.resolve();
+    if (!scriptLoading) scriptLoading = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"; s.async = true;
+      s.onload = resolve; s.onerror = () => { scriptLoading = null; reject(new Error("load")); };
       document.head.append(s);
-    } else if (!cfg.captchaBypassed) {
-      widget.replaceChildren(h("div", { class: "notice warn", text: "Online applications are temporarily unavailable because spam protection is not set up yet. Please contact the ASWRA secretariat." }));
-      submit.disabled = true;
-    }
+    });
+    return scriptLoading;
   }
+  function prepareCaptcha() {
+    if (!cfg || !cat) return;                      // needs the configuration and a visible form
+    if (!cfg.turnstileSiteKey) {
+      if (!cfg.captchaBypassed) { widget.replaceChildren(h("div", { class: "notice warn", text: cfg.failed ? "The form could not load its security settings. Please reload the page." : "Online applications are temporarily unavailable because spam protection is not set up yet. Please contact the ASWRA secretariat." })); submit.disabled = true; }
+      return;
+    }
+    if (widgetId !== null) return;                 // render exactly once
+    widgetId = -1;                                  // mark as in progress
+    loadScript().then(() => {
+      widgetId = window.turnstile.render(widget, {
+        sitekey: cfg.turnstileSiteKey, action: cfg.turnstileAction || "membership_application", theme: "light", retry: "auto", "refresh-expired": "auto",
+        callback: (t) => { token = t; captchaMessage(""); },
+        "expired-callback": () => { token = ""; captchaMessage("The verification expired. Please complete it again."); },
+        "timeout-callback": () => { token = ""; captchaMessage("The verification timed out. Please complete it again."); },
+        "error-callback": (code) => { token = ""; captchaMessage(`The verification widget reported a problem${code ? ` (code ${code})` : ""}. Reload the page. If it keeps happening, contact the ASWRA secretariat.`); return true; },
+      });
+    }).catch(() => { widgetId = null; captchaMessage("The verification could not be loaded. Check your connection, turn off any content blocker for this site, then reload the page."); });
+  }
+  function resetCaptcha() { token = ""; if (window.turnstile && widgetId !== null && widgetId !== -1) { try { window.turnstile.reset(widgetId); } catch { /* widget already gone */ } } }
 
+  /* ---------- collect, validate, submit ---------- */
   const val = (id) => { const e = document.getElementById(id); return e ? e.value : ""; };
   function collect() {
     const formData = {};
@@ -113,10 +134,10 @@ function init() {
     const keys = Object.keys(errs); if (!keys.length) return;
     const list = h("ul", {});
     for (const k of keys) {
-      const target = k === "category" ? $(".cat-option input") : inputFor(k), msg = errs[k];
+      const target = k === "category" ? $(".cat-option input") : k === "turnstile" ? widget : inputFor(k), msg = errs[k];
       const slot = $("#err-" + k); if (slot) slot.textContent = msg;
-      if (target) { target.setAttribute("aria-invalid", "true"); }
-      list.append(h("li", {}, target ? h("a", { href: "#", onclick: (ev) => { ev.preventDefault(); target.focus(); }, text: msg }) : msg));
+      if (target && k !== "turnstile") target.setAttribute("aria-invalid", "true");
+      list.append(h("li", {}, target ? h("a", { href: "#", onclick: (ev) => { ev.preventDefault(); (target.focus ? target : widget).focus?.(); }, text: msg }) : msg));
     }
     summary.append(h("div", { class: "notice err", role: "alert" }, h("strong", { text: headline }), list));
     summary.focus(); summary.scrollIntoView({ block: "center" });
@@ -127,7 +148,7 @@ function init() {
     if (busy || !cat) { if (!cat) showErrors({ category: "Please choose a membership category." }); return; }
     const p = collect(), errs = localErrors(p);
     if (Object.keys(errs).length) return showErrors(errs);
-    if (cfg.turnstileSiteKey && !token) return showErrors({ declaration: "Please complete the verification challenge before submitting." }, "One more step:");
+    if (cfg && cfg.turnstileSiteKey && !token) return showErrors({ turnstile: "Please complete the security check before submitting." }, "One more step:");
     clearErrors(); busy = true; submit.disabled = true; submit.textContent = "Submitting\u2026"; form.setAttribute("aria-busy", "true"); status.textContent = "Sending your application, please wait\u2026";
     try {
       const res = await fetch("/api/applications", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(p) });
@@ -135,11 +156,13 @@ function init() {
       if (res.status === 201) return success(data.reference);
       if (res.status === 422 && data.fields) showErrors(data.fields);
       else summary.replaceChildren(h("div", { class: "notice " + (res.status === 429 || res.status === 409 ? "warn" : "err"), role: "alert", text: data.error || "Something went wrong. Please try again." }));
-      if (window.turnstile) { try { window.turnstile.reset(); token = ""; } catch {} }
+      // A Turnstile token works once. It is used up by verification, so ask for a fresh one unless the server rejected the form first.
+      if (res.status !== 422 && res.status !== 429) resetCaptcha();
+      if (/^captcha_/.test(data.code || "")) captchaMessage(data.error);
       summary.focus();
     } catch {
       summary.replaceChildren(h("div", { class: "notice err", role: "alert", text: "We could not reach the server. Check your connection and try again. Your answers are still on this page." }));
-    } finally { busy = false; submit.disabled = !cfg.turnstileSiteKey && !cfg.captchaBypassed; submit.textContent = "Submit application"; form.removeAttribute("aria-busy"); status.textContent = ""; }
+    } finally { busy = false; submit.disabled = !!cfg && !cfg.turnstileSiteKey && !cfg.captchaBypassed; submit.textContent = "Submit application"; form.removeAttribute("aria-busy"); status.textContent = ""; }
   });
 
   function success(ref) {

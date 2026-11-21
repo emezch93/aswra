@@ -1,0 +1,28 @@
+
+1. Build the OLD database (migration 0001) and fill it with data
+  PASS old database holds the seeded data
+  PASS old schema rejects the new communication type
+
+2. Apply migration 0002
+  PASS applications: every row is preserved exactly
+  PASS application_status_history: every row is preserved exactly
+  PASS application_reviews: every row is preserved exactly
+  PASS communication_logs: every row is preserved exactly
+  PASS audit_logs: every row is preserved exactly
+  PASS admin_users: every row is preserved exactly
+  PASS stale rate limit counters are cleared
+  PASS communication table now accepts 'acknowledgement'
+  PASS communication table still rejects unknown types
+  PASS communication table still rejects an unknown status
+  PASS foreign keys still protect communications
+  PASS no foreign key violations in the database
+  PASS indexes exist (idx_comm_app, idx_audit_action) and older ones survive
+  PASS append only protection is still active on history
+  PASS only one administrator can exist
+  PASS all eight core tables exist
+
+3. Re-running 0002 is safe (idempotent)
+  PASS rows are still intact after a second run
+  PASS still no foreign key violations
+
+Result: 20 passed, 0 failed

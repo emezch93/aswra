@@ -51,7 +51,7 @@ const txt = (d, s) => d.querySelector(s)?.textContent || "";
 
 // ---------------------------------------------------------------------------
 section("1. Public pages: availability, structure, links and assets");
-const PAGES = ["/", "/about.html", "/activities.html", "/leadership.html", "/membership.html", "/contact.html", "/application-status/", "/privacy.html", "/admin/"];
+const PAGES = ["/", "/about.html", "/activities.html", "/partnerships.html", "/leadership.html", "/membership.html", "/contact.html", "/application-status/", "/privacy.html", "/admin/"];
 const seen = new Set();
 for (const p of PAGES) {
   const res = await fetch(BASE + p); const html = await res.text();
@@ -61,7 +61,7 @@ for (const p of PAGES) {
     check(`${p} has a title, description and exactly one h1`, !!d.title && !!d.querySelector('meta[name="description"]') && d.querySelectorAll("h1").length === 1);
     check(`${p} has lang, skip link, main landmark and navigation`, d.documentElement.lang === "en" && !!d.querySelector(".skip") && !!d.querySelector("main#main") && !!d.querySelector("nav#site-nav"));
     check(`${p} images have alt attributes`, [...d.querySelectorAll("img")].every((i) => i.hasAttribute("alt")));
-    check(`${p} has all six primary nav links`, ["index.html", "about.html", "activities.html", "leadership.html", "membership.html", "contact.html"].every((h) => [...d.querySelectorAll("#site-nav a")].some((a) => a.getAttribute("href").endsWith(h))));
+    check(`${p} has all seven primary nav links (including Partnerships)`, ["index.html", "about.html", "activities.html", "partnerships.html", "leadership.html", "membership.html", "contact.html"].every((h) => [...d.querySelectorAll("#site-nav a")].some((a) => a.getAttribute("href").endsWith(h))));
   }
   check(`${p} has no inline scripts or style attributes (CSP safe)`, !/<script(?![^>]*\bsrc=)[^>]*>[^<]/.test(html) && !/\sstyle=/.test(html) && !/\son[a-z]+=/i.test(html));
   const refs = [...d.querySelectorAll("a[href],link[href],script[src],img[src]")].map((e) => e.getAttribute("href") || e.getAttribute("src")).filter((u) => u && !/^(https?:|mailto:|tel:|#|data:)/.test(u));
@@ -79,7 +79,25 @@ for (const c of ["Individual Recycler Members", "Recycling Business Members", "C
 check("membership page warns that membership does not guarantee loans or grants", /does not guarantee loans, grants, contracts/.test(mem));
 check("membership page has the Apply for Membership button", /href="#apply"[^>]*>Apply for Membership/.test(mem));
 const lead = await (await fetch(BASE + "/leadership.html")).text();
-check("leadership page uses placeholders, not invented names", (lead.match(/Placeholder/g) || []).length >= 3 && /Mr Oscar Raymond/.test(lead));
+check("leadership page names only the State Coordinator and states that other details await confirmation", /Mr Oscar Raymond/.test(lead) && (lead.match(/class="person/g) || []).length <= 1 && /formal confirmation/i.test(lead));
+
+const navSig = async (u) => { const d = new JSDOM(await (await fetch(BASE + u)).text()).window.document; return [...d.querySelectorAll("#site-nav a")].map((a) => a.textContent).join("|"); };
+const sigs = await Promise.all(["/", "/about.html", "/activities.html", "/partnerships.html", "/leadership.html", "/membership.html", "/contact.html", "/privacy.html", "/application-status/", "/404.html"].map(navSig));
+check("every page has the identical navigation (Home to Contact, Partnerships included)", new Set(sigs).size === 1 && sigs[0].includes("Partnerships"), sigs.find((s, i) => s !== sigs[0]) || "");
+let r404 = await fetch(BASE + "/this-page-does-not-exist");
+check("unknown address returns a real 404 page (not the home page)", r404.status === 404 && /Page not found/.test(await r404.text()));
+for (const f of ["/robots.txt", "/sitemap.xml"]) check(`${f} is served`, (await fetch(BASE + f)).status === 200);
+const sm = await (await fetch(BASE + "/sitemap.xml")).text();
+check("sitemap lists the public pages on the Cloudflare Pages address", ["/", "/about", "/activities", "/partnerships", "/leadership", "/membership", "/contact"].every((x) => sm.includes(`https://aswra-mvp.pages.dev${x}</loc>`)) && !sm.includes("admin"));
+for (const u of ["/", "/about.html", "/activities.html", "/partnerships.html", "/leadership.html", "/membership.html", "/contact.html", "/privacy.html"]) {
+  const d = new JSDOM(await (await fetch(BASE + u)).text()).window.document;
+  check(`${u} has canonical URL and Open Graph tags`, !!d.querySelector('link[rel="canonical"]')?.href.startsWith("https://aswra-mvp.pages.dev") && !!d.querySelector('meta[property="og:title"]') && !!d.querySelector('meta[property="og:image"]'));
+}
+for (const u of ["/admin/", "/application-status/", "/404.html"]) check(`${u} is marked noindex`, /name="robots" content="noindex/.test(await (await fetch(BASE + u)).text()));
+const allText = (await Promise.all(["/", "/about.html", "/activities.html", "/partnerships.html", "/leadership.html", "/membership.html", "/contact.html"].map(async (u) => new JSDOM(await (await fetch(BASE + u)).text()).window.document.querySelector("main").textContent))).join(" ").replace(/\u2019/g, "'").replace(/\s+/g, " ");
+for (const [label, re] of [["presents ASWRA as a collection or recycling operator", /\bwe (collect|recycle|process) (waste|plastic|materials)/i], ["promises employment, income or funding", /(?<!not )guarantee[sd]? (employment|jobs|income|funding|grants|loans)/i], ["claims a government or regulator role", /\bASWRA is (a|the) (government|regulat)/i], ["claims existing partnerships or endorsements", /\b(our|existing) (partners are|partnerships with)|endorsed by|accredited by|certified by/i], ["invents statistics", /\b\d{2,}[,\d]*\+? (members|recyclers|tonnes|tons|enterprises)\b/i]])
+  check(`public content never ${label}`, !re.test(allText), (re.exec(allText) || [])[0]);
+check("public content states ASWRA is not a regulator", /not a government regulator/i.test(allText));
 
 section("2. Navigation behaviour");
 let pg = await open("/", ["site"]);
@@ -88,7 +106,10 @@ check("menu is closed by default", !nav.classList.contains("open") && tg.getAttr
 click(tg); check("menu button opens the menu and updates aria-expanded", nav.classList.contains("open") && tg.getAttribute("aria-expanded") === "true");
 click(nav.querySelector("a")); check("choosing a link closes the menu", !nav.classList.contains("open"));
 check("current page is marked in navigation", pg.d.querySelector('#site-nav a[aria-current="page"]')?.dataset.page === "home");
-check("home page renders both celebration countdowns", pg.d.querySelectorAll("#celebrations .cd").length === 2 && /days/.test(txt(pg.d, "#celebrations .cd")));
+const homeTxt = new JSDOM(home).window.document.body.textContent.replace(/\u2019/g, "'").replace(/\s+/g, " ");
+check("home page has the approved headline, slogan and description", homeTxt.includes("Organising Anambra's recycling sector for a sustainable future.") && homeTxt.includes("Turning Waste into Wealth.") && homeTxt.includes("ASWRA is a state-level membership association bringing together waste recyclers, recovery workers, recycling enterprises, cooperatives and strategic partners"));
+check("home page names the five institutional pillars exactly", ["Organisation", "Capacity Development", "Industry Development", "Advocacy", "Environmental Sustainability"].every((x) => new JSDOM(home).window.document.querySelector(".pillars").textContent.includes(x)));
+check("home page has no leftover celebration countdown code", !pg.d.querySelector("#celebrations"));
 check("no script errors on the home page", pg.errors.length === 0, pg.errors.join());
 pg = await open("/contact.html", ["site"]);
 check("contact WhatsApp form is wired up", !!pg.d.querySelector("#wa-form"));

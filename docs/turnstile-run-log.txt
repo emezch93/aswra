@@ -1,0 +1,74 @@
+  PASS test server (Turnstile configured) started
+
+1. Public configuration
+  PASS config exposes the site key and the action name
+  PASS config does not expose the secret key
+
+2. Server side verification is really performed
+  PASS a valid token is accepted and the application saved (201)
+  PASS Siteverify was called exactly once, server side
+  PASS the call is a POST to the Siteverify endpoint using the form encoded format
+  PASS the call carries the secret key, the visitor's token and the visitor IP
+  PASS the call carries an idempotency key (random UUID)
+  PASS the secret key never appears in any response to the browser
+
+3. Failure handling
+  PASS a missing token is rejected (400) without calling Siteverify
+  PASS an invalid token is rejected (400, reason invalid)
+  PASS an expired token is rejected with a helpful message (reason expired)
+  PASS token used once is accepted
+  PASS the same token reused is rejected (reason expired)
+  PASS a token solved on another website is rejected (hostname check)
+  PASS a token for a different form is rejected (action check)
+  PASS a Siteverify outage returns a safe 503 (captcha_unavailable)
+  PASS the outage is retried once with the SAME idempotency key
+  PASS error responses never contain secrets or internal details
+
+4. Order of checks protects the applicant's token
+  PASS an invalid form is rejected (422) BEFORE Siteverify, so the token is not burned
+  PASS the same token still works once the form is corrected
+  PASS first copy saved
+  PASS a duplicate (verified) is refused with 409, not reported as a captcha problem
+  PASS a cross site Origin is refused before anything else (403)
+
+5. Failed verification does not use up the legitimate allowance
+  PASS after 5 failed verifications the next valid application is still accepted
+  PASS repeated failed verifications from one IP are eventually limited (429, 60 per hour)
+
+6. Misconfigured secret is reported clearly and not blamed on the visitor
+  PASS a rejected secret key gives 503 captcha_misconfigured with a safe message
+  PASS server misconfiguration is not counted against the visitor (no lockout after 70 attempts)
+
+7. Administrator diagnostics
+  PASS diagnostics require a signed in administrator (401)
+  PASS diagnostics report configuration without revealing key values
+  PASS diagnostics count failures by reason over 24 hours (expired, invalid, misconfigured, mismatch, unavailable)
+  PASS diagnostics list recent failures with their Cloudflare error codes
+  PASS a flood of one failure kind cannot hide others (per reason log limit of 20 per hour)
+  PASS diagnostics warn when the site key and secret may belong to different widgets
+  PASS no token or visitor IP is stored in the failure log
+  PASS the secret check asks Siteverify with a fake token and reports the secret accepted
+  PASS the secret check reports a rejected secret
+  PASS the secret check requires the CSRF token (403)
+
+8. Production safety
+  PASS second test server (production mode) started
+  PASS production mode IGNORES the test only Siteverify override (mock never called)
+  PASS production mode talks to the real Cloudflare address (unreachable here, so a safe 503)
+  PASS production mode never reports the local bypass
+
+9. Browser behaviour of the form with a Turnstile widget (stand in widget)
+  PASS the Turnstile script is not loaded before a category is chosen
+  PASS after choosing a category the widget is rendered once
+  PASS widget uses the site key from the server and the form's action name
+  PASS changing category repeatedly does NOT re-render or move the widget
+  PASS submitting before the security check is solved asks the visitor to complete it (no request sent)
+  PASS a widget error shows its code and a helpful message
+  PASS solving the check clears the message
+  PASS an expired check asks the visitor to repeat it
+  PASS a browser side validation error does not reset or burn the token
+  PASS a rejected token shows the server's message and resets the widget for a fresh token
+  PASS with a valid token the application is submitted and the reference shown
+  PASS the token sent to the server was the one the widget produced
+
+Result: 54 passed, 0 failed

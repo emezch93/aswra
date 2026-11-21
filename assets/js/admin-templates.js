@@ -7,6 +7,11 @@ const REASON = "[Administrator's specific explanation]";
 const INFO = "[Specific information requested by the administrator]";
 
 export const TEMPLATES = {
+  acknowledgement: {
+    label: "Acknowledge application received", detail: null,
+    subject: "We Have Received Your ASWRA Membership Application",
+    body: `Dear ${NAME},\n\nThank you for applying to join the Anambra State Waste Recyclers Association (ASWRA).\n\nWe confirm that your application has been received and is awaiting review. Receiving your application does not mean that it has been approved. We will contact you if further information is needed.\n\nYour application reference is ${REF}. You can check the progress of your application at any time on the Application Status page of our website.\n\nThank you for your interest in ASWRA.\n\n${SIGN}`,
+  },
   approval: {
     label: "Approval (congratulations)", detail: null,
     subject: "Congratulations! Your ASWRA Membership Application Has Been Approved",

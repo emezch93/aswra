@@ -12,6 +12,8 @@
   PASS POST /api/admin/applications/1/communications rejects anonymous users (401)
   PASS PATCH /api/admin/communications/1 rejects anonymous users (401)
   PASS POST /api/admin/logout rejects anonymous users (401)
+  PASS GET /api/admin/diagnostics rejects anonymous users (401)
+  PASS POST /api/admin/diagnostics rejects anonymous users (401)
   PASS session endpoint reports unauthenticated
 
 2. One time administrator setup
@@ -192,7 +194,20 @@
 15. Rate limiting
   PASS login is rate limited after repeated failures (429)
   PASS correct password also blocked while rate limited
-  PASS application submission is rate limited (429)
+  PASS 40 invalid submissions are rejected (422) without being rate limited
+  PASS invalid submissions did not use up the successful application allowance
+  PASS first copy of a submission is saved
+  PASS 35 duplicate submissions are refused (409) without being rate limited
+  PASS duplicates did not use up the allowance
+  PASS 30 successful applications per hour from one IP are all accepted
+  PASS the 31st successful application in an hour is refused (429)
+  PASS retry time is reported and is within one hour
+  PASS a different IP address is not affected
+  PASS a blocked IP still gets a 429 and not a validation answer
+  PASS the daily limit (100 successful applications) is enforced
+  PASS an expired hourly window no longer blocks the applicant
+  PASS leftover counters from the old limit scheme (old key names) do not block anyone
+  PASS the overall request flood guard (120 per hour) still works
   PASS status lookups are rate limited (429)
 
-Result: 166 passed, 0 failed
+Result: 181 passed, 0 failed

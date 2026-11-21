@@ -49,7 +49,7 @@ section("1. Health and unauthenticated access");
 let r = await call("GET", "/api/health");
 check("health endpoint returns ok", r.status === 200 && r.data.status === "ok");
 check("health exposes nothing but status", Object.keys(r.data).join() === "status");
-for (const [m, p] of [["GET", "/api/admin/dashboard"], ["GET", "/api/admin/applications"], ["GET", "/api/admin/applications/1"], ["GET", "/api/admin/applications/1/history"], ["PATCH", "/api/admin/applications/1/status"], ["POST", "/api/admin/applications/1/reviews"], ["POST", "/api/admin/applications/1/decision"], ["POST", "/api/admin/applications/1/communications"], ["PATCH", "/api/admin/communications/1"], ["POST", "/api/admin/logout"]]) {
+for (const [m, p] of [["GET", "/api/admin/dashboard"], ["GET", "/api/admin/applications"], ["GET", "/api/admin/applications/1"], ["GET", "/api/admin/applications/1/history"], ["PATCH", "/api/admin/applications/1/status"], ["POST", "/api/admin/applications/1/reviews"], ["POST", "/api/admin/applications/1/decision"], ["POST", "/api/admin/applications/1/communications"], ["PATCH", "/api/admin/communications/1"], ["POST", "/api/admin/logout"], ["GET", "/api/admin/diagnostics"], ["POST", "/api/admin/diagnostics"]]) {
   r = await call(m, p, { body: {} });
   check(`${m} ${p} rejects anonymous users (401)`, r.status === 401, r.status);
 }
@@ -292,17 +292,50 @@ for (let i = 0; i < 6; i++) last = await call("POST", "/api/admin/login", { body
 check("login is rate limited after repeated failures (429)", last.status === 429 && !!last.headers.get("retry-after"));
 r = await call("POST", "/api/admin/login", { body: ADMIN, ip: lip }); check("correct password also blocked while rate limited", r.status === 429);
 resetLimits();
-const aip = nextIp(); let lastA; let acceptedA = 0;
-for (let i = 0; i < 25; i++) {
-  lastA = await call("POST", "/api/applications", { body: valid({ email: `shared${i}@example.com`, applicantName: "Shared Network Applicant " + i }), ip: aip });
-  if (lastA.status === 201) acceptedA++;
-}
-check("25 separate applicants can submit from one shared internet connection", acceptedA === 25, `accepted=${acceptedA}`);
-for (let i = 25; i < 31; i++) lastA = await call("POST", "/api/applications", { body: valid({ email: `rl${i}@example.com`, applicantName: "Rate Limit " + i }), ip: aip });
-check("application submission is rate limited only after 30 verified submissions per hour (429)", lastA.status === 429);
+import crypto from "node:crypto";
+const APP_SECRET = devVar("APP_SECRET");
+const sha = (s) => crypto.createHash("sha256").update(s).digest("hex");
+const keyFor = (ip, name) => sha(`${APP_SECRET}|rl:${name}:${sha(`${APP_SECRET}|ip:${ip}`)}`);   // mirrors functions/_lib (keyed hash)
+const setCounter = (key, count, ageSeconds = 0) => sql(`INSERT OR REPLACE INTO rate_limits (key, window_start, count) VALUES ('${key}', ${Math.floor(Date.now() / 1000) - ageSeconds}, ${count})`);
+let n = 0; const fresh = (extra = {}) => valid({ email: `rl${Date.now()}${n++}@example.com`, applicantName: `Allowance Test ${n}`, ...extra });
+const post = (ip, body) => call("POST", "/api/applications", { body, ip });
+
+const ipA = nextIp(); let allInvalid = true;
+for (let i = 0; i < 40; i++) { const r = await post(ipA, { ...fresh(), phone: "bad" }); if (r.status !== 422) allInvalid = false; }
+check("40 invalid submissions are rejected (422) without being rate limited", allInvalid);
+r = await post(ipA, fresh()); check("invalid submissions did not use up the successful application allowance", r.status === 201, r.status);
+const dupBody = fresh(); r = await post(ipA, dupBody); check("first copy of a submission is saved", r.status === 201);
+let dupOk = true; for (let i = 0; i < 35; i++) { const d2 = await post(ipA, dupBody); if (d2.status !== 409) dupOk = false; }
+check("35 duplicate submissions are refused (409) without being rate limited", dupOk);
+r = await post(ipA, fresh()); check("duplicates did not use up the allowance", r.status === 201, r.status);
+
+resetLimits();
+const ipB = nextIp(); let okCount = 0, lastB;
+for (let i = 0; i < 30; i++) { lastB = await post(ipB, fresh()); if (lastB.status === 201) okCount++; }
+check("30 successful applications per hour from one IP are all accepted", okCount === 30, `accepted ${okCount}`);
+lastB = await post(ipB, fresh());
+check("the 31st successful application in an hour is refused (429)", lastB.status === 429);
+const ra = Number(lastB.headers.get("retry-after"));
+check("retry time is reported and is within one hour", ra > 0 && ra <= 3600, String(ra));
+r = await post(nextIp(), fresh()); check("a different IP address is not affected", r.status === 201);
+r = await post(ipB, { ...fresh(), phone: "bad" }); check("a blocked IP still gets a 429 and not a validation answer", r.status === 429);
+
+resetLimits();
+const ipC = nextIp();
+setCounter(keyFor(ipC, "apply:ok:d"), 100, 100);
+r = await post(ipC, fresh()); check("the daily limit (100 successful applications) is enforced", r.status === 429 && Number(r.headers.get("retry-after")) > 80000, `${r.status} ${r.headers.get("retry-after")}`);
+const ipD = nextIp();
+setCounter(keyFor(ipD, "apply:ok:h"), 30, 4000);
+r = await post(ipD, fresh()); check("an expired hourly window no longer blocks the applicant", r.status === 201, String(r.status));
+const ipE = nextIp();
+setCounter(keyFor(ipE, "apply:h"), 999, 10); setCounter(keyFor(ipE, "apply:d"), 999, 10);
+r = await post(ipE, fresh()); check("leftover counters from the old limit scheme (old key names) do not block anyone", r.status === 201, String(r.status));
+const ipF = nextIp();
+setCounter(keyFor(ipF, "apply:try"), 120, 10);
+r = await post(ipF, fresh()); check("the overall request flood guard (120 per hour) still works", r.status === 429);
 resetLimits();
 const sip = nextIp(); let lastS;
-for (let i = 0; i < 32; i++) lastS = await call("GET", "/api/application-status?reference=ASWRA-2026-AAAAAAAAAAAA", { ip: sip });
+for (let i = 0; i < 62; i++) lastS = await call("GET", "/api/application-status?reference=ASWRA-2026-AAAAAAAAAAAA", { ip: sip });
 check("status lookups are rate limited (429)", lastS.status === 429);
 
 console.log(`\nResult: ${pass} passed, ${fail} failed`);

@@ -17,6 +17,27 @@ Database: **Cloudflare D1** (SQLite). Binding name in code: `DB`. Migrations are
 
 Relationships: reviews, history and communications reference `applications(id)` with `ON DELETE RESTRICT` (history can never be lost by deleting an application). Admin references use `ON DELETE SET NULL`. Constraints enforce valid statuses, categories, communication types and that declarations were accepted. Indexes cover status, category, submission date, email and duplicate checks.
 
+## Migrations in this release
+
+| File | What it does | Effect on existing data |
+|---|---|---|
+| `0001_initial_schema.sql` | Creates all eight tables, indexes and protection triggers | none (first run) |
+| `0002_audit_fixes.sql` | (1) Clears `rate_limits` because the limit scheme changed. (2) Rebuilds `communication_logs` so it accepts the new type `acknowledgement`, copying every row. (3) Adds `idx_audit_action`. | **No applications, history, notes, audit or communication rows are lost** (proved by `tests/migration.mjs`). Only temporary rate limit counters are cleared, which also releases anyone blocked by older, stricter counters. |
+
+Migration history is never edited: fixes are new files. Re-running 0002 is safe. D1 migrations are applied in order and tracked by Wrangler, so `npm run db:migrate:remote` only applies files that have not run yet.
+
+## Rate limit records (`rate_limits`)
+
+Keys are hashed (never raw IP addresses). Counters used by the application form:
+
+| Counter | Counts | Limit |
+|---|---|---|
+| `apply:try` | every submission attempt (flood guard) | 120 per hour per IP |
+| `apply:ok:h` / `apply:ok:d` | **successfully saved** applications only | 30 per hour / 100 per day per IP |
+| `apply:capfail` | failed Turnstile verifications (not server misconfiguration) | 60 per hour per IP |
+
+Invalid forms, duplicates and failed verifications never use up the successful application allowance. The table is disposable: `DELETE FROM rate_limits;` (via `wrangler d1 execute ... --remote --command`) instantly releases everyone if ever needed.
+
 ## Local versus production
 
 - **Local**: `npm run db:migrate:local` and `npm run dev`. Stored under `.wrangler/state/`. Safe to delete (`sh tests/reset-local.sh` resets it).

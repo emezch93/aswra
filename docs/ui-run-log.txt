@@ -4,49 +4,55 @@
   PASS / has a title, description and exactly one h1
   PASS / has lang, skip link, main landmark and navigation
   PASS / images have alt attributes
-  PASS / has all six primary nav links
+  PASS / has all seven primary nav links (including Partnerships)
   PASS / has no inline scripts or style attributes (CSP safe)
   PASS /about.html loads (200)
   PASS /about.html has a title, description and exactly one h1
   PASS /about.html has lang, skip link, main landmark and navigation
   PASS /about.html images have alt attributes
-  PASS /about.html has all six primary nav links
+  PASS /about.html has all seven primary nav links (including Partnerships)
   PASS /about.html has no inline scripts or style attributes (CSP safe)
   PASS /activities.html loads (200)
   PASS /activities.html has a title, description and exactly one h1
   PASS /activities.html has lang, skip link, main landmark and navigation
   PASS /activities.html images have alt attributes
-  PASS /activities.html has all six primary nav links
+  PASS /activities.html has all seven primary nav links (including Partnerships)
   PASS /activities.html has no inline scripts or style attributes (CSP safe)
+  PASS /partnerships.html loads (200)
+  PASS /partnerships.html has a title, description and exactly one h1
+  PASS /partnerships.html has lang, skip link, main landmark and navigation
+  PASS /partnerships.html images have alt attributes
+  PASS /partnerships.html has all seven primary nav links (including Partnerships)
+  PASS /partnerships.html has no inline scripts or style attributes (CSP safe)
   PASS /leadership.html loads (200)
   PASS /leadership.html has a title, description and exactly one h1
   PASS /leadership.html has lang, skip link, main landmark and navigation
   PASS /leadership.html images have alt attributes
-  PASS /leadership.html has all six primary nav links
+  PASS /leadership.html has all seven primary nav links (including Partnerships)
   PASS /leadership.html has no inline scripts or style attributes (CSP safe)
   PASS /membership.html loads (200)
   PASS /membership.html has a title, description and exactly one h1
   PASS /membership.html has lang, skip link, main landmark and navigation
   PASS /membership.html images have alt attributes
-  PASS /membership.html has all six primary nav links
+  PASS /membership.html has all seven primary nav links (including Partnerships)
   PASS /membership.html has no inline scripts or style attributes (CSP safe)
   PASS /contact.html loads (200)
   PASS /contact.html has a title, description and exactly one h1
   PASS /contact.html has lang, skip link, main landmark and navigation
   PASS /contact.html images have alt attributes
-  PASS /contact.html has all six primary nav links
+  PASS /contact.html has all seven primary nav links (including Partnerships)
   PASS /contact.html has no inline scripts or style attributes (CSP safe)
   PASS /application-status/ loads (200)
   PASS /application-status/ has a title, description and exactly one h1
   PASS /application-status/ has lang, skip link, main landmark and navigation
   PASS /application-status/ images have alt attributes
-  PASS /application-status/ has all six primary nav links
+  PASS /application-status/ has all seven primary nav links (including Partnerships)
   PASS /application-status/ has no inline scripts or style attributes (CSP safe)
   PASS /privacy.html loads (200)
   PASS /privacy.html has a title, description and exactly one h1
   PASS /privacy.html has lang, skip link, main landmark and navigation
   PASS /privacy.html images have alt attributes
-  PASS /privacy.html has all six primary nav links
+  PASS /privacy.html has all seven primary nav links (including Partnerships)
   PASS /privacy.html has no inline scripts or style attributes (CSP safe)
   PASS /admin/ loads (200)
   PASS /admin/ has no inline scripts or style attributes (CSP safe)
@@ -65,15 +71,46 @@
   PASS membership page lists "Strategic and Corporate Partners"
   PASS membership page warns that membership does not guarantee loans or grants
   PASS membership page has the Apply for Membership button
-  PASS leadership page uses placeholders, not invented names
+  PASS leadership page names only the State Coordinator and states that other details await confirmation
+  PASS every page has the identical navigation (Home to Contact, Partnerships included)
+  PASS unknown address returns a real 404 page (not the home page)
+  PASS /robots.txt is served
+  PASS /sitemap.xml is served
+  PASS sitemap lists the public pages on the Cloudflare Pages address
+  PASS / has canonical URL and Open Graph tags
+  PASS /about.html has canonical URL and Open Graph tags
+  PASS /activities.html has canonical URL and Open Graph tags
+  PASS /partnerships.html has canonical URL and Open Graph tags
+  PASS /leadership.html has canonical URL and Open Graph tags
+  PASS /membership.html has canonical URL and Open Graph tags
+  PASS /contact.html has canonical URL and Open Graph tags
+  PASS /privacy.html has canonical URL and Open Graph tags
+  PASS /admin/ is marked noindex
+  PASS /application-status/ is marked noindex
+  PASS /404.html is marked noindex
+  PASS public content never presents ASWRA as a collection or recycling operator
+  PASS public content never promises employment, income or funding
+  PASS public content never claims a government or regulator role
+  PASS public content never claims existing partnerships or endorsements
+  PASS public content never invents statistics
+  PASS public content states ASWRA is not a regulator
 
 2. Navigation behaviour
   PASS menu is closed by default
   PASS menu button opens the menu and updates aria-expanded
   PASS choosing a link closes the menu
   PASS current page is marked in navigation
-  PASS home page renders both celebration countdowns
+  PASS home page has the approved headline, slogan and description
+  PASS home page names the five institutional pillars exactly
+  PASS home page has no leftover celebration countdown code
   PASS no script errors on the home page
+Error: Not implemented: navigation (except hash changes)
+    at module.exports (/home/claude/live/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at navigateFetch (/home/claude/live/node_modules/jsdom/lib/jsdom/living/window/navigation.js:77:3)
+    at exports.navigate (/home/claude/live/node_modules/jsdom/lib/jsdom/living/window/navigation.js:55:3)
+    at Timeout._onTimeout (/home/claude/live/node_modules/jsdom/lib/jsdom/living/nodes/HTMLHyperlinkElementUtils-impl.js:81:7)
+    at listOnTimeout (node:internal/timers:585:17)
+    at process.processTimers (node:internal/timers:521:7) undefined
   PASS contact WhatsApp form is wired up
 
 3. Membership application form (real API)
@@ -162,4 +199,4 @@
   PASS fresh browser (no cookie) sees the login form only
   PASS no credentials or secrets appear in the admin page source
 
-Result: 145 passed, 0 failed
+Result: 175 passed, 0 failed

@@ -1,4 +1,4 @@
-import { ApiError, handle, json } from "./http.js";
+import { ApiError, handle } from "./http.js";
 import { b64u, randomBytes, safeEqual, sha256 } from "./crypto.js";
 import { ipHash } from "./guards.js";
 
@@ -65,4 +65,3 @@ export const audit = (env, { adminId = null, action, entityType = null, entityId
     "INSERT INTO audit_logs (admin_id, action, entity_type, entity_id, details, ip_hash) VALUES (?1,?2,?3,?4,?5,?6)"
   ).bind(adminId, action, entityType, entityId == null ? null : String(entityId), details ? JSON.stringify(details) : null, ip);
 
-export { json };

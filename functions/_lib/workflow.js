@@ -10,7 +10,7 @@ export const TRANSITIONS = {
 };
 // An official decision can only follow a review.
 export const DECISION_FROM = ["Under Review", "Recommended for Approval", "Recommended for Rejection"];
-export const COMM_TYPES = ["approval", "rejection", "additional_information", "under_review", "receipt_confirmation", "general_update", "clarification"];
+export const COMM_TYPES = ["acknowledgement", "approval", "rejection", "additional_information", "under_review", "receipt_confirmation", "general_update", "clarification"];
 
 // Changes status, writes history and audit in ONE atomic batch.
 // Returns false if the application was no longer in the expected status (concurrent change).

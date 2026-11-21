@@ -1,4 +1,4 @@
-import { ApiError, clientIp, handle, json, readJson } from "../../_lib/http.js";
+import { ApiError, handle, json, readJson } from "../../_lib/http.js";
 import { hashPassword, safeEqual } from "../../_lib/crypto.js";
 import { ipHash, rateLimit } from "../../_lib/guards.js";
 import { audit } from "../../_lib/auth.js";

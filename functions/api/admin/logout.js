@@ -1,5 +1,5 @@
 import { json } from "../../_lib/http.js";
-import { audit, cookieName, sessionCookie, withAdmin } from "../../_lib/auth.js";
+import { audit, sessionCookie, withAdmin } from "../../_lib/auth.js";
 import { ipHash } from "../../_lib/guards.js";
 
 export const onRequestPost = withAdmin(async ({ request, env, session }) => {

@@ -1,88 +1,63 @@
 # Testing Report
 
-Date of last full run: 17 November 2026. Environment: Node 22, `wrangler pages dev` 4.164 with a **local** D1 (SQLite) database. Nothing was run against a real Cloudflare account, production database or the live site.
+Run on the final code. Environment: Node 22, Wrangler 4.164 (`wrangler pages dev`) with a **local** D1 database, headless Chromium (bundled by `@sparticuz/chromium`) for layout. **Nothing was run against a real Cloudflare account, the production database or the live site.** Raw logs: `docs/*-run-log.txt`.
 
-Run everything yourself with `sh tests/run-all.sh` (resets the LOCAL database first). Raw output: `docs/e2e-run-log.txt` and `docs/ui-run-log.txt`.
+Run everything: `sh tests/run-all.sh` (resets the LOCAL database first). Layout test: `npm i --no-save puppeteer-core @sparticuz/chromium` then `node tests/layout.mjs`.
 
-## Summary
+## Results
 
-| Suite | Checks | Passed | Failed |
-|---|---|---|---|
-| API and database (`tests/e2e.mjs`) | 166 | 166 | 0 |
-| Browser level (`tests/ui.mjs`, simulated browser, real API) | 145 | 145 | 0 |
-| Manual and one off checks (below) | 5 | 5 | 0 |
+| Suite | File | Checks | Passed | Failed |
+|---|---|---|---|---|
+| API and database | `tests/e2e.mjs` | 181 | 181 | 0 |
+| Browser level (simulated browser, real API and database) | `tests/ui.mjs` | 175 | 175 | 0 |
+| Turnstile (stand in for Cloudflare Siteverify) | `tests/turnstile.mjs` | 54 | 54 | 0 |
+| Migration safety | `tests/migration.mjs` | 20 | 20 | 0 |
+| Static HTML audit | `tests/html-audit.mjs` | 118 | 118 | 0 |
+| **Real browser layout** (6 screen sizes, 11 pages, form) | `tests/layout.mjs` | 455 | 455 | 0 |
+| **Total** | | **1003** | **1003** | **0** |
 
-## API and database tests (166)
+Baseline before any change (existing repository): API 167/167, browser level 143/145 (two expectations were stale after content edits, not product defects). Layout baseline showed no overflow or script errors.
 
-| Area | Checks | What was verified |
+## What each suite proves
+
+**API and database (181).** Health; every admin endpoint rejects anonymous users; one time administrator setup (token, strength, single use, database level single administrator, hashed password); login, cookie flags, hashed session tokens; applications for all five categories, validation, honeypot, duplicates, injection text stored harmlessly; public status exposes only status, message and date; dashboard counts, search, filters, sorting, paging, injection and wildcard safety; detail; full approval and rejection workflows (recommendations never become decisions, final decisions cannot change, history retained, internal notes never public); email records (Prepared versus Marked as Sent, recipient from the application); CSRF and Origin checks; private files return 404 and security headers; audit log; session expiry, idle expiry, logout; **rate limits**: 40 invalid submissions and 35 duplicates do not use the allowance, 30 successes per hour accepted and the 31st refused with a retry time, daily limit of 100, expired window releases the visitor, **old counters from the previous limit scheme do not block anyone**, flood guard, login and status limits.
+
+**Browser level (175).** All pages return 200 with correct titles, descriptions, single h1, landmarks; identical navigation on every page including Partnerships; branded 404 returns a real 404; robots, sitemap, canonical and Open Graph tags; noindex on admin, status and 404; no inline scripts or styles (strict CSP); every link and asset resolves; official contact details, vision and mission wording; headline, slogan and five pillars; content never claims operator, regulator, guaranteed employment or funding roles, or invents statistics; mobile menu; the application form for each category, validation messages, double submit protection, confirmation shows the reference and never says approved; status page; admin login, dashboard, search, detail, review, recommendations, decisions, email composer (all templates, edit, preview, mailto link, copy, mark as sent), logout.
+
+**Turnstile (54).** A local server imitates Siteverify so the REAL verification code runs. Verified: the call is a server side POST with secret, token, visitor IP and an idempotency key; the secret never reaches the browser; valid, missing, invalid, expired, reused tokens; tokens solved on another hostname or for another form rejected; an outage returns a safe 503 and is retried once with the same key; invalid forms are rejected before verification so the token is not burned; failed verification does not consume the allowance but repeated failures are limited at 60 per hour; a rejected secret gives a clear `captcha_misconfigured` and is not counted against visitors; diagnostics (admin only, no key values, counts by reason, secret check); **production mode ignores the test only Siteverify override and never bypasses**; the form renders the widget once, does not move or re-render it when the category changes, reacts to expiry and errors, resets the token after a rejection and submits the token the widget produced.
+
+**Migration (20).** Migration 0001 is applied and filled with data, then 0002 is applied: every row in applications, history, reviews, communications, audit and admin tables is identical; rate limits cleared; the new type is accepted and invalid types, statuses and foreign keys still rejected; indexes and append only protection intact; re-running 0002 is safe.
+
+**HTML audit (118).** Unique ids, heading order without skipped levels, labels on every form control, alt text, safe external links, no empty links or buttons, no insecure links, language, viewport, title and favicon, skip link and landmarks.
+
+**Real browser layout (455).** At 320, 360, 390, 768, 1024 and 1440 pixel widths on every page: no horizontal scrolling, nothing outside the screen, touch targets at least 36 pixels, readable text, one h1, no console errors or failed assets, the menu collapses on phones and opens on tap with all links reachable, the full menu shows on wide screens; the membership form renders after choosing a category with no overflow and shows an error summary when submitted empty. Screenshots were reviewed by eye (not stored in the repository).
+
+## Problems found by testing and fixed
+
+- My rewrite of the application form script looked up an element before it was attached to the page, so the form would not render. Caught by the Turnstile browser test and fixed (`apply.js`).
+- Turnstile failure logging was throttled globally, so a flood of one failure type could hide a configuration error. Now throttled per reason, and the dashboard counts failures by reason over 24 hours.
+- Four stale test expectations and a timing race in the tests were corrected.
+
+## NOT tested (needs Cloudflare configuration, a human or a real device)
+
+| Not tested | Why | Evidence needed |
 |---|---|---|
-| Health and anonymous access | 13 | Health reveals only `status`. Every admin endpoint returns 401 without a session. |
-| One time administrator setup | 7 | Missing and wrong token refused. Weak password refused. Setup works once, then is refused. The database itself rejects a second administrator. Password stored as PBKDF2 hash. |
-| Login, session, cookies | 9 | Wrong password and unknown email give the same message. Cookie is `HttpOnly`, `SameSite=Strict`, with Max-Age. Password never returned. Raw session token is not stored (hash only). |
-| Application submission and validation | 28 | Valid applications saved for all five categories. Unique references. Duplicate refused (409). Missing contact person, bad email, bad phone, unknown LGA, unknown category, missing declaration or privacy consent, wrong select or checkbox values, bot honeypot, wrong content type, malformed JSON, oversized body all rejected. Markup and SQL injection text stored harmlessly. Tables intact afterwards. |
-| Public status | 8 | Valid reference works (also lower case). Only `status`, `message`, `updatedAt` returned. No personal data. Unknown, malformed and injection references return the same safe 404. |
-| Dashboard, search, filters, sort, pages | 16 | Counts from real data. Search by name, reference, email. Category and status filters. Empty results. Sorting. Pagination. Injection in search, LIKE wildcards and sort column are harmless. Bad and unknown ids handled. |
-| Application detail | 2 | Full data returned. History starts with the submission entry. |
-| Approval workflow | 27 | Cannot approve a Pending application. Status endpoint cannot set Approved or Rejected. Cannot skip Under Review. Private notes, information request with applicant message, recommendation, official approval with explicit confirmation. A recommendation is shown publicly as a recommendation, not as approval. Old applicant message cleared on change. Final decision cannot be reversed or changed. History, notes and decision date retained. Database blocks editing history and deleting the audit log. Internal notes never appear in public responses. |
-| Rejection workflow | 8 | Reason category and explanation required. Listed categories only. Recommendation to reject is not shown as Rejected. Official rejection and applicant message. Reason stored in history. Dashboard counts update. |
-| Email records | 13 | Placeholders, empty subject, short body, unknown type rejected. Recipient always comes from the application (client supplied recipient ignored). Saved as **Prepared**, never Sent. Can be marked Marked as Sent once, only with that exact status. |
-| CSRF and origin | 4 | Missing token, wrong token, foreign Origin and missing Origin all rejected (403). |
-| Static files and headers | 13 | `docs/`, `migrations/`, `wrangler.toml`, `package.json`, `functions/`, `scripts/`, `.dev.vars*`, `tests/`, `README.md` return 404. CSP, `nosniff`, frame blocking headers present. API not cacheable. Public config exposes no secrets. |
-| Audit log | 9 | Setup, login, failed login, status change, recommendation, decision, review note, communication prepared and marked sent are all recorded. |
-| Session expiry and logout | 5 | Expired session rejected. Idle session (3 hours) rejected. Logout invalidates the session on the server. |
-| Rate limiting | 4 | Login locks after repeated failures (even correct password blocked, `Retry-After` set). Application submissions and status lookups limited (429). |
-
-## Browser level tests (145)
-
-Real page scripts were bundled and run in jsdom against the real local API and database.
-
-| Area | Checks | What was verified |
-|---|---|---|
-| Public pages | 66 | All pages return 200. Title, description, one `h1`, `lang`, skip link, landmarks, nav links. Images have `alt`. No inline scripts or `style` attributes (so the strict CSP works). Every internal link and asset resolves. Phone numbers, email and address match the official details. Vision and mission match the approved wording. The five exact membership categories. No benefits guarantee. Leadership uses placeholders. |
-| Navigation | 7 | Menu opens and closes, `aria-expanded` updates, current page marked, countdowns render, no script errors. |
-| Application form | 22 | Category specific fields for all five categories. Nothing hidden until a category is chosen. No NIN, bank, upload or guarantor fields. Error summary, per field errors, `aria-invalid`. Browser side email and phone checks. Submit button disabled while sending. Double submit saves only one application. Confirmation shows the reference, tells the applicant to keep it and does not say approved. |
-| Status page | 5 | Malformed, unknown and valid references. No personal details displayed. Link prefill. |
-| Dashboard | 14 | Login error and success. Statistics. Table columns. Markup in a name is shown as text and not executed. Search, empty state, opening a record, full detail, labelled private, public and email fields. |
-| Review controls | 5 | Status change, decision controls only appear after review starts, recommendation, history timeline with private notes marked Private. |
-| Email composer | 16 | Approval template (exact approved subject, name and reference filled in, no promises). Rejection and additional information templates. Specific text inserted. Edit and preview. Unfinished template cannot be saved. Mailto link built with recipient, subject, message and reference. Prepared is not shown as sent. Copy fallback. Mark as sent. Explanations that the system never sends email and that Marked as Sent is not proof of delivery. |
-| Decision | 5 | Rejection reason field appears. Official approval. Controls removed afterwards. Applicant sees Approved. |
-| Logout | 5 | Returns to login. Old session rejected by the API. Fresh browser sees login only. No credentials or secrets in admin page source. |
-
-## Manual and one off checks (5)
-
-1. **Fails closed in production mode.** A second server was started with `ENVIRONMENT=production` and no Turnstile secret. `POST /api/applications` returned 503 `captcha_unconfigured` and nothing was saved.
-2. **Administrator reset procedure.** Deleting the administrator row works even though history refers to it (links become empty, history kept), and setup can then be run again.
-3. **Applications with history cannot be deleted** (database refuses).
-4. **Colour contrast** of the main text, button, link and header colour pairs was calculated: all at least 4.5:1 (WCAG AA for normal text). Lowest: 4.56:1 (green eyebrow text on the dark header green).
-5. **Schema applies cleanly** on a fresh database (24 statements, including the single administrator index and append only triggers).
-
-## Problems found and fixed during testing
-
-- The application form did not render the category fields (lists were passed to a DOM method that turns them into text). Found by the browser tests, fixed in `apply.js`, `admin.js` and `dom.js`.
-- Rejection reasons defaulted to the first category, which could cause a wrong reason to be pre filled. They now start blank so the template keeps its placeholder until the administrator chooses or writes a reason.
-- Test mistakes (a GET request with a body, wrong page size expectation, a timing race) were fixed in the tests, not the product.
-
-## NOT tested (needs external configuration or a real device)
-
-| Not tested | Why |
-|---|---|
-| Deployment to Cloudflare Pages, production D1, bindings and secrets | No Cloudflare credentials were used. Nothing was deployed. |
-| **Real Cloudflare Turnstile** verification (widget and server check) | Needs real site and secret keys and internet access. Only the "no keys" paths were tested (local bypass, production fails closed). |
-| Opening a real email app from `mailto:` | A simulated browser cannot launch Gmail or Mail. The generated link was checked, not the app. Very long messages may be truncated by some email apps, so the page offers Copy. |
-| Clipboard copy in real browsers | Tested with a stand in clipboard. |
-| **Visual layout** on phones, tablets and desktops, and different browsers (Chrome, Safari, Firefox, Edge) | jsdom has no layout engine. Responsive CSS was written for mobile first but has not been viewed on real screens. **Please check on a phone and a laptop before showing the client.** |
-| Screen reader testing, keyboard only walkthrough | Only structural accessibility (labels, landmarks, `aria` attributes, contrast) was checked. |
-| Facebook link and WhatsApp number behaviour | The Facebook share link `https://www.facebook.com/share/1J9RiHkSam/` could not be opened by the tools used, so it is **unverified**. Confirm it works. The WhatsApp link uses the first official number (07085379538). |
-| Performance, load and penetration testing | Not performed. Rate limiting and injection basics were tested only. |
-| Behaviour with hundreds of applications | The queries are indexed and paged, but only about a dozen records were used. |
+| **Real Turnstile with real keys** (widget display, token creation, live Siteverify) | No Cloudflare credentials or internet to Cloudflare. Only the Siteverify stand in was used | Submit a test application on the preview deployment and use the dashboard System check |
+| Whether the Content Security Policy fully satisfies the live Turnstile widget | The policy follows the earlier fix (script, frame and connect to `challenges.cloudflare.com`) but could not be confirmed against the live widget | Browser console on the preview shows no CSP violations and the widget appears |
+| Deployment, D1 production binding, secrets, remote migration | Not authorised and no access | README section 10 on the preview URL |
+| Cloudflare Pages serving `404.html` with status 404 in production | Verified only in the local Pages emulator | Open a nonexistent URL on the deployment, expect the branded page with HTTP 404 |
+| Opening a real email app from `mailto:` and long message truncation | A simulated browser cannot launch Gmail or Mail | Press "Save and open email" on a real device |
+| Real phones, other browsers (Safari, Firefox), print layout | Only Chromium was available | Open the preview on an Android phone and an iPhone |
+| Screen reader and keyboard only walkthrough | Only structure, labels, focus styles and contrast were checked | Manual pass with TalkBack or VoiceOver |
+| Facebook share link and WhatsApp number behaviour | The Facebook link could not be opened by the tools used | Click both links |
+| Performance and load, penetration testing | Not performed | Lighthouse and a professional test before large scale use |
+| Hundreds of applications | Queries are indexed and paged, but only dozens of records were used | Load test if volumes grow |
 
 ## Known limitations
 
-- A final decision (Approved or Rejected) cannot be changed in the dashboard. A correction needs the maintainer.
-- There is one administrator. A forgotten password needs the maintainer (see `DATABASE_SETUP.md`).
-- Test applications cannot be deleted. Start the live system with a fresh database.
-- Duplicate detection is exact match (same category, name, email and phone within 24 hours).
-- Rate limiting uses fixed time windows keyed to the visitor's IP address.
-- Because `functions/_middleware.js` runs on every request, every page view counts as a Functions request on Cloudflare.
-- No dark mode (the earlier prototype had one).
-- Facebook link, State Coordinator message and executive details are placeholders or unverified (see the handover notes).
+- A final decision cannot be changed in the dashboard (by design). Corrections need the maintainer.
+- One administrator: a forgotten password needs the documented database reset. Five wrong passwords for the administrator email lock logins for that email for 15 minutes, which an attacker could use to nuisance lock the real administrator. Use a strong password and 2 step protected email.
+- Test applications cannot be deleted. Start production with a fresh database.
+- Duplicate detection is exact (same category, name, email, phone within 24 hours).
+- Rate limits are per IP address in fixed windows. Mobile networks that share one address are covered by the generous 30 per hour and 100 per day limits.
+- Each request, including static files, runs through the middleware and counts as a Pages Functions request.

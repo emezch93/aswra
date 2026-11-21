@@ -8,7 +8,7 @@ const NOT_FOUND = "We could not find an application with that reference. Please 
 // Returns the minimum public information: status, applicant-facing message and last update date.
 export const onRequestGet = handle(async ({ request, env }) => {
   const ip = await ipHash(env, request);
-  await rateLimit(env, `status:${ip}`, 30, 600);
+  await rateLimit(env, `status:${ip}`, 60, 600); // 60 lookups per 10 minutes per IP (shared networks are common)
   const ref = (new URL(request.url).searchParams.get("reference") || "").trim().toUpperCase();
   if (!REFERENCE_PATTERN.test(ref)) throw new ApiError(404, NOT_FOUND, "not_found");
   const row = await env.DB.prepare("SELECT status, public_message, updated_at FROM applications WHERE reference = ?1").bind(ref).first();

@@ -16,6 +16,8 @@ export const json = (data, status = 200, headers = {}) =>
 export async function readJson(request, max = 20000) {
   if (!(request.headers.get("content-type") || "").includes("application/json"))
     throw new ApiError(415, "Unsupported content type.", "bad_content_type");
+  const declared = Number(request.headers.get("content-length"));
+  if (declared > max) throw new ApiError(413, "The request is too large.", "too_large"); // refuse before reading the body
   const text = await request.text();
   if (text.length > max) throw new ApiError(413, "The request is too large.", "too_large");
   try {
@@ -34,7 +36,7 @@ export const handle = (fn) => async (ctx) => {
   } catch (e) {
     if (e instanceof ApiError) {
       const headers = e.details.retryAfter ? { "retry-after": String(e.details.retryAfter) } : {};
-      return json({ error: e.message, code: e.code, ...(e.details.fields ? { fields: e.details.fields } : {}) }, e.status, headers);
+      return json({ error: e.message, code: e.code, ...(e.details.reason ? { reason: e.details.reason } : {}), ...(e.details.fields ? { fields: e.details.fields } : {}) }, e.status, headers);
     }
     console.error("unhandled_api_error", e && e.message);
     return json({ error: "Something went wrong. Please try again later.", code: "server_error" }, 500);
@@ -47,4 +49,10 @@ export const isLocalhost = (request) => ["localhost", "127.0.0.1"].includes(new 
 export function parseId(value) {
   if (!/^\d{1,9}$/.test(String(value))) throw new ApiError(404, "Not found.", "not_found");
   return Number(value);
+}
+
+// Browsers always send Origin on cross site requests. If it is present it must be this site.
+export function assertSameOrigin(request) {
+  const origin = request.headers.get("origin");
+  if (origin && origin !== new URL(request.url).origin) throw new ApiError(403, "Request origin not allowed.", "bad_origin");
 }

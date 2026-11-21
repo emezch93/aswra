@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Disallow: /application-status/
+
+Sitemap: https://aswra-mvp.pages.dev/sitemap.xml
