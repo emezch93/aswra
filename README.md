@@ -1,6 +1,6 @@
 # ASWRA Website and Membership Management System
 
-Official website and membership application system for the **Anambra State Waste Recyclers Association (ASWRA)**.
+Official website and membership application system for the **Anambra Waste Recyclers Association (ASWRA)**.
 HTML, CSS and vanilla JavaScript on **Cloudflare Pages**, with **Pages Functions** (API) and **Cloudflare D1** (database). No framework and no build step.
 
 Live address (review): https://aswra.pages.dev/ · Repository: https://github.com/emezch93/aswra
