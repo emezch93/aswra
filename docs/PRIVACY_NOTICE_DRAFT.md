@@ -3,7 +3,7 @@
 **Status: draft.** ASWRA must review and approve this notice, with legal advice where appropriate, before public launch. Fill every item in [square brackets]. The same text is shown to applicants at `/privacy.html` and must be kept in sync. Using these security features does not by itself make the system compliant with data protection law (for example the Nigeria Data Protection Act 2023).
 
 ## Who is responsible for your information
-The Anambra State Waste Recyclers Association (ASWRA), Staff Development Centre, Behind Old Government House, Awka, Anambra State, Nigeria. Email: aswrahome@gmail.com. Phone: 07085379538. [Name of the person responsible for data protection.]
+The Anambra Waste Recyclers Association (ASWRA), Staff Development Centre, Behind Old Government House, Awka, Anambra State, Nigeria. Email: aswrahome@gmail.com. Phone: 07085379538. [Name of the person responsible for data protection.]
 
 ## What we collect
 - Your name, or your organisation's name and a contact person.
