@@ -1,6 +1,6 @@
 // Default email templates for the administrator's message composer.
 // Wording for approval, rejection and additional information follows the approved brief.
-const SIGN = "Kind regards,\n\nMembership Administrator\nAnambra State Waste Recyclers Association";
+const SIGN = "Kind regards,\n\nMembership Administrator\nAnambra Waste Recyclers Association";
 const REF = "[Application Reference]";
 const NAME = "[Applicant Name]";
 const REASON = "[Administrator's specific explanation]";
@@ -10,18 +10,18 @@ export const TEMPLATES = {
   acknowledgement: {
     label: "Acknowledge application received", detail: null,
     subject: "We Have Received Your ASWRA Membership Application",
-    body: `Dear ${NAME},\n\nThank you for applying to join the Anambra State Waste Recyclers Association (ASWRA).\n\nWe confirm that your application has been received and is awaiting review. Receiving your application does not mean that it has been approved. We will contact you if further information is needed.\n\nYour application reference is ${REF}. You can check the progress of your application at any time on the Application Status page of our website.\n\nThank you for your interest in ASWRA.\n\n${SIGN}`,
+    body: `Dear ${NAME},\n\nThank you for applying to join the Anambra Waste Recyclers Association (ASWRA).\n\nWe confirm that your application has been received and is awaiting review. Receiving your application does not mean that it has been approved. We will contact you if further information is needed.\n\nYour application reference is ${REF}. You can check the progress of your application at any time on the Application Status page of our website.\n\nThank you for your interest in ASWRA.\n\n${SIGN}`,
   },
   approval: {
     label: "Approval (congratulations)", detail: null,
     subject: "Congratulations! Your ASWRA Membership Application Has Been Approved",
-    body: `Dear ${NAME},\n\nCongratulations!\n\nWe are pleased to inform you that your membership application to the Anambra State Waste Recyclers Association (ASWRA) has been successfully reviewed and approved.\n\nWe welcome you to the association and look forward to your participation in our collective efforts towards responsible waste management, recycling development and environmental sustainability in Anambra State.\n\nYour application reference is ${REF}.\n\nThank you for your interest in ASWRA.\n\n${SIGN}`,
+    body: `Dear ${NAME},\n\nCongratulations!\n\nWe are pleased to inform you that your membership application to the Anambra Waste Recyclers Association (ASWRA) has been successfully reviewed and approved.\n\nWe welcome you to the association and look forward to your participation in our collective efforts towards responsible waste management, recycling development and environmental sustainability in Anambra State.\n\nYour application reference is ${REF}.\n\nThank you for your interest in ASWRA.\n\n${SIGN}`,
   },
   rejection: {
     label: "Rejection (with explanation)",
     detail: { label: "Reason for the decision", help: "Explain the actual reason clearly and respectfully. Choose a reason category to start, then edit the wording.", required: true, reasons: true },
     subject: "Update on Your ASWRA Membership Application",
-    body: `Dear ${NAME},\n\nThank you for your interest in joining the Anambra State Waste Recyclers Association.\n\nFollowing a review of your application, we regret to inform you that your application has not been approved at this time.\n\nReason: ${REASON}\n\nWe appreciate your interest in ASWRA and encourage you to review the stated reason. Where applicable, you may contact the association for clarification on the relevant requirements.\n\nYour application reference is ${REF}.\n\nThank you for your understanding.\n\n${SIGN}`,
+    body: `Dear ${NAME},\n\nThank you for your interest in joining the Anambra Waste Recyclers Association.\n\nFollowing a review of your application, we regret to inform you that your application has not been approved at this time.\n\nReason: ${REASON}\n\nWe appreciate your interest in ASWRA and encourage you to review the stated reason. Where applicable, you may contact the association for clarification on the relevant requirements.\n\nYour application reference is ${REF}.\n\nThank you for your understanding.\n\n${SIGN}`,
     token: REASON,
   },
   additional_information: {
@@ -34,7 +34,7 @@ export const TEMPLATES = {
   under_review: {
     label: "Application is under review", detail: null,
     subject: "Your ASWRA Membership Application Is Under Review",
-    body: `Dear ${NAME},\n\nThank you for applying to join the Anambra State Waste Recyclers Association.\n\nThis is to let you know that your application is now being reviewed. We will contact you when there is an update.\n\nYour application reference is ${REF}. You can also check progress at any time on the Application Status page of our website.\n\n${SIGN}`,
+    body: `Dear ${NAME},\n\nThank you for applying to join the Anambra Waste Recyclers Association.\n\nThis is to let you know that your application is now being reviewed. We will contact you when there is an update.\n\nYour application reference is ${REF}. You can also check progress at any time on the Application Status page of our website.\n\n${SIGN}`,
   },
   receipt_confirmation: {
     label: "Additional information received", detail: null,
