@@ -1,7 +1,7 @@
 # Used for local development and D1 migrations only.
 # The Cloudflare Pages project keeps its own bindings and settings in the dashboard
 # (this file deliberately has no pages_build_output_dir, so Pages ignores it).
-name = "aswra-mvp"
+name = "aswra"
 compatibility_date = "2025-01-01"
 
 [[d1_databases]]

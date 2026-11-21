@@ -24,7 +24,7 @@ Legend: [x] done and verified here · [ ] still to do
 - [ ] Create D1 database `aswra-membership`; put its ID in `wrangler.toml`
 - [ ] Bind it as `DB` (Production and Preview)
 - [ ] `npm run db:migrate:remote` (after a backup if the database already has data)
-- [ ] Turnstile widget with `aswra-mvp.pages.dev` (and preview hostnames) in Hostname Management
+- [ ] Turnstile widget with `aswra.pages.dev` (and preview hostnames) in Hostname Management
 - [ ] `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET` from the **same** widget, in Production **and** Preview
 - [ ] `APP_SECRET` and `ADMIN_SETUP_TOKEN` set; **do not** set `ENVIRONMENT`
 - [ ] Redeploy after setting variables

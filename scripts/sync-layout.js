@@ -4,7 +4,7 @@
 // Each page contains <!--HEADER--><!--/HEADER--> and <!--FOOTER--><!--/FOOTER--> markers.
 const fs = require("fs");
 
-const SITE = "https://aswra-mvp.pages.dev"; // current Cloudflare Pages address (no custom domain yet)
+const SITE = "https://aswra.pages.dev"; // current Cloudflare Pages address (no custom domain yet)
 // file -> public (canonical) path. Pages without an entry are not indexed and get no canonical or Open Graph block.
 const CANONICAL = { "index.html": "/", "about.html": "/about", "activities.html": "/activities", "partnerships.html": "/partnerships", "leadership.html": "/leadership", "membership.html": "/membership", "contact.html": "/contact", "privacy.html": "/privacy" };
 const PAGES = ["index.html", "about.html", "activities.html", "partnerships.html", "leadership.html", "membership.html", "contact.html", "privacy.html", "application-status/index.html", "404.html"];

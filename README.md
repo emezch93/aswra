@@ -3,7 +3,7 @@
 Official website and membership application system for the **Anambra State Waste Recyclers Association (ASWRA)**.
 HTML, CSS and vanilla JavaScript on **Cloudflare Pages**, with **Pages Functions** (API) and **Cloudflare D1** (database). No framework and no build step.
 
-Live address (review): https://aswra-mvp.pages.dev/ · Repository: https://github.com/emezch93/aswra-mvp
+Live address (review): https://aswra.pages.dev/ · Repository: https://github.com/emezch93/aswra
 
 What it does: a public website (Home, About, What We Do, Partnerships, Leadership, Membership, Contact, Privacy), a category aware online application form protected by Cloudflare Turnstile, a public application status checker, and a private dashboard (`/admin/`) for **one** administrator to review applications, record recommendations and official decisions, and prepare manual email responses. The system never sends email itself.
 
@@ -16,7 +16,7 @@ What it does: a public website (Home, About, What We Do, Partnerships, Leadershi
 ## 2. Install and run locally
 
 ```bash
-git clone https://github.com/emezch93/aswra-mvp.git && cd aswra-mvp
+git clone https://github.com/emezch93/aswra.git && cd aswra-mvp
 npm install
 cp .dev.vars.example .dev.vars        # edit: set APP_SECRET and ADMIN_SETUP_TOKEN to long random values
 npm run db:migrate:local              # creates the local (SQLite) database from migrations/
@@ -59,7 +59,7 @@ Wrangler records which migrations ran, so running it again only applies new ones
 
 ## 6. Configure Turnstile (spam protection)
 
-1. Cloudflare dashboard, **Turnstile**, **Add widget**. Hostnames: `aswra-mvp.pages.dev` (add preview hostnames you test on). Mode: Managed.
+1. Cloudflare dashboard, **Turnstile**, **Add widget**. Hostnames: `aswra.pages.dev` (add preview hostnames you test on). Mode: Managed.
 2. The widget page shows **two** values: a *Site key* (public) and a *Secret key* (private). **Both must come from the same widget.**
 3. Add them to the Pages project (Production **and** Preview):
 
@@ -87,7 +87,7 @@ Generate a random secret in PowerShell: `$b=New-Object byte[] 48;[Security.Crypt
 
 After the site is deployed with the secrets above:
 ```bash
-SITE_URL=https://aswra-mvp.pages.dev ADMIN_SETUP_TOKEN=<token> npm run setup:admin
+SITE_URL=https://aswra.pages.dev ADMIN_SETUP_TOKEN=<token> npm run setup:admin
 ```
 Enter an ASWRA controlled email and a password of at least 12 characters (hidden). The password travels over HTTPS and is stored only as a PBKDF2 hash. Then **delete the `ADMIN_SETUP_TOKEN` secret**. The endpoint refuses to run again, and the database allows only one administrator row. Forgotten password procedure: `docs/DATABASE_SETUP.md`.
 

@@ -25,7 +25,7 @@ The form returned `{"error":"Verification failed. Please try again.","code":"cap
    - `TURNSTILE_SITE_KEY` equals that widget's site key.
    - `TURNSTILE_SECRET` equals that widget's secret key (re-enter it; delete and add again if unsure).
    - There must be no other widget's keys, no spaces, no quotes.
-3. Widget **Hostname Management** lists `aswra-mvp.pages.dev` (and any preview hostname you test on).
+3. Widget **Hostname Management** lists `aswra.pages.dev` (and any preview hostname you test on).
 4. **Redeploy** (Deployments, Retry deployment). Variables only apply to new deployments.
 5. Open `/admin/`, expand **System check: spam protection**, press **Ask Cloudflare to check the secret key**. "Accepted" means the secret is valid. It cannot prove the site key matches, so also confirm step 2 by eye.
 6. Submit a test application. Then look at **Verification failures in the last 24 hours** in the System check.

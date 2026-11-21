@@ -3,4 +3,4 @@ Disallow: /admin/
 Disallow: /api/
 Disallow: /application-status/
 
-Sitemap: https://aswra-mvp.pages.dev/sitemap.xml
+Sitemap: https://aswra.pages.dev/sitemap.xml
