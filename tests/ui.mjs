@@ -79,7 +79,7 @@ for (const c of ["Individual Recycler Members", "Recycling Business Members", "C
 check("membership page warns that membership does not guarantee loans or grants", /does not guarantee loans, grants, contracts/.test(mem));
 check("membership page has the Apply for Membership button", /href="#apply"[^>]*>Apply for Membership/.test(mem));
 const lead = await (await fetch(BASE + "/leadership.html")).text();
-check("leadership page names only the State Coordinator and states that other details await confirmation", /Mr Oscar Raymond/.test(lead) && (lead.match(/class="person/g) || []).length <= 1 && /formal confirmation/i.test(lead));
+check("leadership page lists the documented board chairman and State Coordinator without draft notes", /Ambassador Barrister Phillips Obuesi/.test(lead) && /Chairman, ASWRA Board/.test(lead) && /Mr Oscar Raymond/.test(lead) && /State Coordinator/.test(lead) && (lead.match(/class="person/g) || []).length === 2 && !/Leadership directory update|formal confirmation/i.test(lead));
 
 const navSig = async (u) => { const d = new JSDOM(await (await fetch(BASE + u)).text()).window.document; return [...d.querySelectorAll("#site-nav a")].map((a) => a.textContent).join("|"); };
 const sigs = await Promise.all(["/", "/about.html", "/activities.html", "/partnerships.html", "/leadership.html", "/membership.html", "/contact.html", "/privacy.html", "/application-status/", "/404.html"].map(navSig));
@@ -88,10 +88,10 @@ let r404 = await fetch(BASE + "/this-page-does-not-exist");
 check("unknown address returns a real 404 page (not the home page)", r404.status === 404 && /Page not found/.test(await r404.text()));
 for (const f of ["/robots.txt", "/sitemap.xml"]) check(`${f} is served`, (await fetch(BASE + f)).status === 200);
 const sm = await (await fetch(BASE + "/sitemap.xml")).text();
-check("sitemap lists the public pages on the Cloudflare Pages address", ["/", "/about", "/activities", "/partnerships", "/leadership", "/membership", "/contact"].every((x) => sm.includes(`https://aswra-mvp.pages.dev${x}</loc>`)) && !sm.includes("admin"));
+check("sitemap lists the public pages on the Cloudflare Pages address", ["/", "/about", "/activities", "/partnerships", "/leadership", "/membership", "/contact"].every((x) => sm.includes(`https://aswra.pages.dev${x}</loc>`)) && !sm.includes("admin"));
 for (const u of ["/", "/about.html", "/activities.html", "/partnerships.html", "/leadership.html", "/membership.html", "/contact.html", "/privacy.html"]) {
   const d = new JSDOM(await (await fetch(BASE + u)).text()).window.document;
-  check(`${u} has canonical URL and Open Graph tags`, !!d.querySelector('link[rel="canonical"]')?.href.startsWith("https://aswra-mvp.pages.dev") && !!d.querySelector('meta[property="og:title"]') && !!d.querySelector('meta[property="og:image"]'));
+  check(`${u} has canonical URL and Open Graph tags`, !!d.querySelector('link[rel="canonical"]')?.href.startsWith("https://aswra.pages.dev") && !!d.querySelector('meta[property="og:title"]') && !!d.querySelector('meta[property="og:image"]'));
 }
 for (const u of ["/admin/", "/application-status/", "/404.html"]) check(`${u} is marked noindex`, /name="robots" content="noindex/.test(await (await fetch(BASE + u)).text()));
 const allText = (await Promise.all(["/", "/about.html", "/activities.html", "/partnerships.html", "/leadership.html", "/membership.html", "/contact.html"].map(async (u) => new JSDOM(await (await fetch(BASE + u)).text()).window.document.querySelector("main").textContent))).join(" ").replace(/\u2019/g, "'").replace(/\s+/g, " ");
