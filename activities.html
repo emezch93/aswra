@@ -19,15 +19,20 @@
 <meta name="twitter:card" content="summary">
 <!--/SEO-->
 <style>
-/* World Environment Day feature: scoped to this section only. */
-.activity-highlight>.container{max-width:1040px}
-.activity-highlight> .container>p:not(.eyebrow){max-width:760px}
-.activity-photo-card{width:min(100%,900px);margin:28px auto 0;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(16,48,31,.08)}
-.activity-photo-link{display:grid;place-items:center;overflow:hidden;border-radius:10px;background:#edf3ed}
-.activity-photo-link img{display:block;width:100%;height:auto;max-height:620px;object-fit:contain;object-position:center}
-.activity-photo-card figcaption{padding:13px 8px 3px;text-align:center;color:var(--mute);font-size:.9rem}
-.activity-photo-link:focus-visible{outline:3px solid var(--sun);outline-offset:4px}
-@media(max-width:520px){.activity-photo-card{padding:8px;margin-top:20px}.activity-photo-link img{max-height:460px}.activity-photo-card figcaption{font-size:.82rem}}
+/* World Environment Day image: aligned to the standard page container. */
+.activity-photo{margin:26px 0 0}
+.activity-photo a{display:block;border-radius:14px;overflow:hidden;background:#edf3ed}
+.activity-photo img{display:block;width:100%;height:auto;max-height:680px;object-fit:contain;object-position:center;border-radius:14px}
+.activity-photo figcaption{margin-top:10px;text-align:center;color:var(--mute);font-size:.9rem}
+.activity-photo a:focus-visible{outline:3px solid var(--sun);outline-offset:4px}
+/* Reuse the leadership image viewer presentation on this page. */
+.image-lightbox{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:64px 16px 20px;background:rgba(5,18,10,.94);backdrop-filter:blur(3px)}
+.image-lightbox[hidden]{display:none}
+.image-lightbox img{display:block;width:auto;height:auto;max-width:min(94vw,1400px);max-height:calc(100dvh - 92px);object-fit:contain;object-position:center;margin:auto;box-shadow:0 12px 48px rgba(0,0,0,.45);border-radius:4px}
+.image-lightbox-close{position:absolute;top:max(14px,env(safe-area-inset-top));right:16px;display:grid;place-items:center;width:44px;height:44px;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(0,0,0,.35);color:#fff;font:400 30px/1 var(--font);cursor:pointer}
+.image-lightbox-close:hover{background:rgba(255,255,255,.18)}
+body.lightbox-open{overflow:hidden}
+@media(max-width:520px){.activity-photo img{max-height:480px}.image-lightbox{padding:60px 10px 12px}.image-lightbox img{max-width:96vw;max-height:calc(100dvh - 84px)}}
 </style>
 </head>
 <body data-page="activities">
@@ -69,8 +74,8 @@
 <section class="section activity-highlight"><div class="container">
 <p class="eyebrow">Environmental engagement</p><h2>World Environment Day 2025</h2>
 <p>ASWRA participated in World Environment Day 2025 activities, including environmental awareness and community engagement initiatives held from 5 to 7 June 2025.</p>
-<figure class="activity-photo-card">
-<a class="activity-photo-link" href="gallery/WhatsApp%20Image%202026-11-21%20at%208.20.11%20PM.jpeg?v=20261122" target="_blank" rel="noopener" aria-label="Open the full World Environment Day 2025 group photograph">
+<figure class="activity-photo">
+<a href="gallery/WhatsApp%20Image%202026-11-21%20at%208.20.11%20PM.jpeg?v=20261122" data-lightbox aria-label="View the full World Environment Day 2025 group photograph">
 <img src="gallery/WhatsApp%20Image%202026-11-21%20at%208.20.11%20PM.jpeg?v=20261122" alt="Participants at World Environment Day 2025 activities involving ASWRA" loading="lazy">
 </a>
 <figcaption>World Environment Day 2025 · 5–7 June 2025</figcaption>
