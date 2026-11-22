@@ -1,0 +1,14 @@
+/* Activities page: World Environment Day feature and shared image viewer. Scoped to activities.html. */
+.event-feature{margin:26px 0 0;padding:clamp(10px,2vw,18px);background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 6px 20px rgba(16,48,31,.07)}
+.event-feature a{display:block;overflow:hidden;border-radius:10px;border:1px solid var(--line);background:#edf3ed;cursor:zoom-in;line-height:0}
+.event-feature img{display:block;width:100%;height:auto}
+.event-feature a:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+.event-feature figcaption{padding:12px 4px 2px;color:var(--mute);font-size:.9rem;line-height:1.4}
+/* Viewer covers the viewport; it is appended to body by site.js and never flows after the footer. */
+.image-lightbox{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:64px 16px 20px;background:rgba(5,18,10,.94);backdrop-filter:blur(3px)}
+.image-lightbox[hidden]{display:none}
+.image-lightbox img{display:block;width:auto;height:auto;max-width:min(94vw,1400px);max-height:calc(100dvh - 92px);object-fit:contain;margin:auto;box-shadow:0 12px 48px rgba(0,0,0,.45);border-radius:4px}
+.image-lightbox-close{position:absolute;top:max(14px,env(safe-area-inset-top));right:16px;display:grid;place-items:center;width:44px;height:44px;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(0,0,0,.35);color:#fff;font:400 30px/1 var(--font);cursor:pointer}
+.image-lightbox-close:hover{background:rgba(255,255,255,.18)}
+body.lightbox-open{overflow:hidden}
+@media(max-width:520px){.event-feature{margin-top:20px;padding:8px;border-radius:12px}.event-feature figcaption{font-size:.82rem}.image-lightbox{padding:60px 10px 12px}.image-lightbox img{max-width:100%;max-height:calc(100dvh - 84px)}}
