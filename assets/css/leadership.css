@@ -38,3 +38,13 @@
 .executive-avatar .avatar-head{fill:#b8c99f}
 .executive-avatar .avatar-body{fill:#28623c}
 @media(max-width:520px){.executive-avatar{width:88px;height:88px;flex-basis:88px}}
+
+
+/* Centered, responsive image viewer. */
+.image-lightbox{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:64px 16px 20px;background:rgba(5,18,10,.94);backdrop-filter:blur(3px)}
+.image-lightbox[hidden]{display:none}
+.image-lightbox img{display:block;width:auto;height:auto;max-width:min(94vw,1400px);max-height:calc(100dvh - 92px);object-fit:contain;object-position:center;margin:auto;box-shadow:0 12px 48px rgba(0,0,0,.45);border-radius:4px}
+.image-lightbox-close{position:absolute;top:max(14px,env(safe-area-inset-top));right:16px;display:grid;place-items:center;width:44px;height:44px;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(0,0,0,.35);color:#fff;font:400 30px/1 var(--font);cursor:pointer}
+.image-lightbox-close:hover{background:rgba(255,255,255,.18)}
+body.lightbox-open{overflow:hidden}
+@media(max-width:520px){.image-lightbox{padding:60px 10px 12px}.image-lightbox img{max-width:96vw;max-height:calc(100dvh - 84px)}}

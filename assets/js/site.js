@@ -28,3 +28,45 @@ if (wa) wa.addEventListener("submit", (e) => {
   open(`https://wa.me/2347085379538?text=${encodeURIComponent(`From ${name}: ${msg}`)}`, "_blank", "noopener");
   wa.reset();
 });
+
+
+// Center leadership photographs in a responsive, accessible lightbox.
+if (document.body.dataset.page === "leadership") {
+  let activeTrigger = null;
+  const viewer = document.createElement("div");
+  viewer.className = "image-lightbox";
+  viewer.hidden = true;
+  viewer.setAttribute("role", "dialog");
+  viewer.setAttribute("aria-modal", "true");
+  viewer.setAttribute("aria-label", "Image viewer");
+  const close = document.createElement("button");
+  close.className = "image-lightbox-close";
+  close.type = "button";
+  close.setAttribute("aria-label", "Close image viewer");
+  close.textContent = "\u00d7";
+  const image = document.createElement("img");
+  viewer.append(close, image);
+  document.body.append(viewer);
+  const closeViewer = () => {
+    if (viewer.hidden) return;
+    viewer.hidden = true;
+    image.removeAttribute("src");
+    document.body.classList.remove("lightbox-open");
+    if (activeTrigger) activeTrigger.focus();
+  };
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("a[data-lightbox]");
+    if (!trigger || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    activeTrigger = trigger;
+    const thumbnail = trigger.querySelector("img");
+    image.src = trigger.href;
+    image.alt = thumbnail?.alt || trigger.getAttribute("aria-label") || "Expanded image";
+    viewer.hidden = false;
+    document.body.classList.add("lightbox-open");
+    close.focus();
+  });
+  close.addEventListener("click", closeViewer);
+  viewer.addEventListener("click", (event) => { if (event.target === viewer) closeViewer(); });
+  document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeViewer(); });
+}
