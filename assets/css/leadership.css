@@ -30,3 +30,11 @@
 .crop-felix img{left:-196%;top:11%}
 .crop-mike img{left:-196%;top:-94%}
 @media(max-width:520px){.leadership-photo{width:88px;height:88px;flex-basis:88px}.portrait-unavailable{width:88px;height:88px;font-size:.7rem}}
+
+/* Executive member fallback illustrations only. Advisory and Elders Council remain unchanged. */
+.executive-avatar{width:112px;height:112px;flex:0 0 112px;margin:0 auto 14px;border-radius:50%;overflow:hidden;border:4px solid #e4f1df;box-shadow:0 0 0 2px var(--leaf);background:#edf4e9}
+.executive-avatar svg{display:block;width:100%;height:100%}
+.executive-avatar .avatar-bg{fill:#e2efdc}
+.executive-avatar .avatar-head{fill:#b8c99f}
+.executive-avatar .avatar-body{fill:#28623c}
+@media(max-width:520px){.executive-avatar{width:88px;height:88px;flex-basis:88px}}
