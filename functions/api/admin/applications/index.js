@@ -17,7 +17,7 @@ export const onRequestGet = withAdmin(async ({ request, env }) => {
 
   const where = ["archived_at IS NULL"], binds = [];
   if (q) {
-    const like = \`%\${q.replace(/[\\%_]/g, "\\\\$&")}%\`;
+    const like = "%" + q.replace(/[\\%_]/g, "\\$&") + "%";
     where.push("(reference LIKE ? ESCAPE '\\' OR applicant_name LIKE ? ESCAPE '\\' OR email LIKE ? ESCAPE '\\' OR phone LIKE ? ESCAPE '\\' OR lga LIKE ? ESCAPE '\\')");
     binds.push(like, like, like, like, like);
   }
