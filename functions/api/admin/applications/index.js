@@ -21,7 +21,11 @@ export const onRequestGet = withAdmin(async ({ request, env }) => {
   const size = Math.min(50, Math.max(5, parseInt(p.get("pageSize"), 10) || 20));
   const page = Math.max(1, parseInt(p.get("page"), 10) || 1);
 
-  const where = ["archived_at IS NULL"];
+  // The archive migration may not yet have reached the production D1 database.
+  // Detect the column before referencing it so the admin list remains available.
+  const columns = await env.DB.prepare("PRAGMA table_info(applications)").all();
+  const hasArchiveColumn = (columns.results || []).some((column) => column.name === "archived_at");
+  const where = hasArchiveColumn ? ["archived_at IS NULL"] : [];
   const binds = [];
 
   if (q) {
@@ -42,15 +46,13 @@ export const onRequestGet = withAdmin(async ({ request, env }) => {
     binds.push(category);
   }
 
-  const whereSql = "WHERE " + where.join(" AND ");
-  const countSql = "SELECT COUNT(*) AS c FROM applications " + whereSql;
-  const total = (
-    await env.DB.prepare(countSql).bind(...binds).first()
-  ).c;
+  const whereSql = where.length ? " WHERE " + where.join(" AND ") : "";
+  const countSql = "SELECT COUNT(*) AS c FROM applications" + whereSql;
+  const total = (await env.DB.prepare(countSql).bind(...binds).first()).c;
 
   const listSql =
     "SELECT id, reference, applicant_name, category, status, submitted_at " +
-    "FROM applications " +
+    "FROM applications" +
     whereSql +
     " ORDER BY " +
     sort +
