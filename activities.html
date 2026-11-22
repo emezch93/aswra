@@ -8,7 +8,26 @@
 <meta name="theme-color" content="#0f4d2a">
 <link rel="icon" href="a.jpg" type="image/jpeg">
 <link rel="stylesheet" href="assets/css/styles.css">
-<link rel="stylesheet" href="assets/css/activities.css">
+<style>
+/* World Environment Day feature: self contained, scoped to this page */
+.wed-card{margin:26px 0 0;padding:clamp(10px,2vw,18px);background:var(--surface,#fff);border:1px solid var(--line,#d9e5da);border-top:4px solid #1f7a3d;border-radius:16px;box-shadow:0 8px 26px rgba(16,48,31,.08)}
+.wed-open{position:relative;display:block;width:100%;padding:0;border:1px solid var(--line,#d9e5da);border-radius:12px;overflow:hidden;background:#edf3ed;cursor:zoom-in;line-height:0}
+.wed-open img{display:block;width:100%;height:auto;transition:transform .5s ease}
+.wed-open:hover img{transform:scale(1.015)}
+.wed-open:focus-visible{outline:3px solid #f2b705;outline-offset:3px}
+.wed-hint{position:absolute;right:12px;bottom:12px;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:rgba(10,36,22,.78);color:#fff;font:600 .8rem/1 inherit;font-family:inherit;line-height:1;backdrop-filter:blur(4px)}
+.wed-cap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 14px;padding:14px 4px 2px}
+.wed-cap strong{color:var(--ink,#10301f);font-size:1rem}
+.wed-cap span{color:var(--mute,#4d6355);font-size:.9rem}
+dialog.wed-viewer{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:transparent;overflow:hidden}
+dialog.wed-viewer[open]{display:flex;align-items:center;justify-content:center}
+dialog.wed-viewer::backdrop{background:rgba(5,18,10,.92)}
+.wed-viewer img{display:block;max-width:min(96vw,1500px);max-height:88dvh;width:auto;height:auto;object-fit:contain;border-radius:6px;box-shadow:0 14px 50px rgba(0,0,0,.5)}
+.wed-close{position:absolute;top:max(14px,env(safe-area-inset-top));right:16px;width:46px;height:46px;border:1px solid rgba(255,255,255,.75);border-radius:50%;background:rgba(0,0,0,.45);color:#fff;font:400 30px/1 Arial,sans-serif;cursor:pointer}
+.wed-close:hover{background:rgba(255,255,255,.2)}
+body.wed-lock{overflow:hidden}
+@media(max-width:520px){.wed-card{margin-top:20px;padding:8px;border-radius:12px}.wed-hint{right:8px;bottom:8px;padding:6px 10px;font-size:.72rem}.wed-viewer img{max-width:100vw;border-radius:0}}
+</style>
 <!--SEO-->
 <link rel="canonical" href="https://aswra.pages.dev/activities">
 <meta property="og:type" content="website">
@@ -56,7 +75,14 @@
 <div class="notice warn"><strong>Please note.</strong> Membership does not guarantee loans, grants, contracts, government appointments, producer payments or admission into any third party programme.</div>
 </div></section>
 <section class="section" id="environmental-engagement"><div class="container"><p class="eyebrow">Environmental engagement</p><h2>World Environment Day 2025</h2><p>ASWRA participated in World Environment Day 2025 activities, including environmental awareness and community engagement initiatives held from 5 to 7 June 2025.</p>
-<figure class="event-feature"><a href="gallery/WhatsApp%20Image%202026-11-21%20at%208.20.11%20PM.jpeg" data-lightbox aria-label="View the full World Environment Day 2025 photograph"><img src="gallery/WhatsApp%20Image%202026-11-21%20at%208.20.11%20PM.jpeg" alt="ASWRA members and participants at World Environment Day 2025 activities" width="2560" height="1706" decoding="async"></a><figcaption>World Environment Day 2025, 5 to 7 June 2025. Select the photograph to enlarge it.</figcaption></figure>
+<div class="wed-card"><button type="button" class="wed-open" aria-label="View World Environment Day 2025 photograph full screen"><img src="gallery/WhatsApp%20Image%202026-11-21%20at%208.20.11%20PM.jpeg" alt="ASWRA members and participants at World Environment Day 2025 activities" width="2560" height="1706" decoding="async"><span class="wed-hint">&#10530; Tap to enlarge</span></button><div class="wed-cap"><strong>World Environment Day 2025</strong><span>5 to 7 June 2025</span></div></div>
+<dialog class="wed-viewer" aria-label="World Environment Day 2025 photograph"><button type="button" class="wed-close" aria-label="Close">&times;</button><img src="gallery/WhatsApp%20Image%202026-11-21%20at%208.20.11%20PM.jpeg" alt="ASWRA members and participants at World Environment Day 2025 activities"></dialog>
+<script>
+(function(){var o=document.querySelector('.wed-open'),d=document.querySelector('dialog.wed-viewer');if(!o||!d||!d.showModal)return;
+o.addEventListener('click',function(){d.showModal();document.body.classList.add('wed-lock');});
+d.addEventListener('click',function(e){if(e.target!==d.querySelector('img'))d.close();});
+d.addEventListener('close',function(){document.body.classList.remove('wed-lock');o.focus();});})();
+</script>
 <div class="cta"><a class="btn green" href="membership.html#apply">Apply for Membership</a><a class="btn outline-dark" href="contact.html">Partner with us</a></div></div></section>
 
 <section class="section"><div class="container"><p class="eyebrow">Across the value chain</p><h2>Practical support for different roles in recycling</h2><p>The needs of a collector are not always the same as those of an aggregator, processor or recycling enterprise. ASWRA's sector-development approach recognises these differences while encouraging cooperation between participants.</p><div class="grid"><div class="card"><h3>For collectors and recovery workers</h3><p>Promote access to relevant information, safe handling practices, opportunities for skills development and a stronger collective voice on issues affecting day-to-day work.</p></div><div class="card"><h3>For aggregators and cooperatives</h3><p>Encourage reliable coordination, material quality awareness, transparent business relationships and access to relevant market information and legitimate buyers.</p></div><div class="card"><h3>For recycling enterprises</h3><p>Support constructive connections across the supply chain, exchange of industry information and engagement on practical challenges affecting responsible business growth.</p></div></div></div></section>
