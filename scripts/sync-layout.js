@@ -23,7 +23,7 @@ ${NAV.map(([k, f, t]) => `<a data-page="${k}" href="${p}${f}">${t}</a>`).join("\
 
 const footer = (p) => `<!--FOOTER-->
 <footer class="site-footer"><div class="container"><div class="foot-grid">
-<div><h2>ASWRA</h2><p>Anambra State Waste Recyclers Association. Turning waste into wealth.</p></div>
+<div><h2>ASWRA</h2><p>Anambra Waste Recyclers Association. Turning waste into wealth.</p></div>
 <div><h2>Pages</h2><div class="foot-links">
 ${NAV.map(([k, f, t]) => `<a href="${p}${f}">${t}</a>`).join("\n")}
 <a href="${p}application-status/">Check application status</a>
@@ -35,7 +35,7 @@ ${NAV.map(([k, f, t]) => `<a href="${p}${f}">${t}</a>`).join("\n")}
 <a href="mailto:aswrahome@gmail.com">aswrahome@gmail.com</a>
 <a href="https://www.facebook.com/share/1J9RiHkSam/" target="_blank" rel="noopener">Facebook</a>
 </div></div></div>
-<p class="copy">&copy; <span id="year">2026</span> Anambra State Waste Recyclers Association (ASWRA)</p></div></footer>
+<p class="copy">&copy; <span id="year">2026</span> Anambra Waste Recyclers Association (ASWRA)</p></div></footer>
 <a class="wa-float" href="https://wa.me/2347085379538" target="_blank" rel="noopener" aria-label="Chat with ASWRA on WhatsApp">WhatsApp</a>
 <!--/FOOTER-->`;
 
@@ -48,7 +48,7 @@ function seo(file, html) {
   return `<!--SEO-->
 <link rel="canonical" href="${SITE}${path}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Anambra State Waste Recyclers Association (ASWRA)">
+<meta property="og:site_name" content="Anambra Waste Recyclers Association (ASWRA)">
 <meta property="og:title" content="${esc(title.trim())}">
 <meta property="og:description" content="${desc}">
 <meta property="og:url" content="${SITE}${path}">
