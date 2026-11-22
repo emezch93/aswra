@@ -30,8 +30,8 @@ if (wa) wa.addEventListener("submit", (e) => {
 });
 
 
-// Center leadership photographs in a responsive, accessible lightbox.
-if (document.body.dataset.page === "leadership") {
+// Center clickable page photographs in a responsive, accessible lightbox.
+if (document.querySelector("a[data-lightbox]")) {
   let activeTrigger = null;
   const viewer = document.createElement("div");
   viewer.className = "image-lightbox";
