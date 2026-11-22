@@ -19,20 +19,19 @@
 <meta name="twitter:card" content="summary">
 <!--/SEO-->
 <style>
-/* World Environment Day image: aligned to the standard page container. */
-.activity-photo{margin:26px 0 0}
-.activity-photo a{display:block;border-radius:14px;overflow:hidden;background:#edf3ed}
-.activity-photo img{display:block;width:100%;height:auto;max-height:680px;object-fit:contain;object-position:center;border-radius:14px}
-.activity-photo figcaption{margin-top:10px;text-align:center;color:var(--mute);font-size:.9rem}
+/* World Environment Day feature: full-width within the site's standard content grid. */
+.activity-photo{width:100%;margin:28px 0 0}
+.activity-photo a{display:block;width:100%;overflow:hidden;border-radius:16px;background:#edf3ed;border:1px solid var(--line);box-shadow:0 8px 24px rgba(16,48,31,.10);cursor:zoom-in}
+.activity-photo img{display:block;width:100%;max-width:100%;height:auto;max-height:none;object-fit:contain;object-position:center}
+.activity-photo figcaption{margin-top:12px;text-align:center;color:var(--mute);font-size:.9rem}
+.activity-photo a:hover{box-shadow:0 12px 30px rgba(16,48,31,.16)}
 .activity-photo a:focus-visible{outline:3px solid var(--sun);outline-offset:4px}
-/* Reuse the leadership image viewer presentation on this page. */
-.image-lightbox{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:64px 16px 20px;background:rgba(5,18,10,.94);backdrop-filter:blur(3px)}
-.image-lightbox[hidden]{display:none}
-.image-lightbox img{display:block;width:auto;height:auto;max-width:min(94vw,1400px);max-height:calc(100dvh - 92px);object-fit:contain;object-position:center;margin:auto;box-shadow:0 12px 48px rgba(0,0,0,.45);border-radius:4px}
-.image-lightbox-close{position:absolute;top:max(14px,env(safe-area-inset-top));right:16px;display:grid;place-items:center;width:44px;height:44px;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:rgba(0,0,0,.35);color:#fff;font:400 30px/1 var(--font);cursor:pointer}
-.image-lightbox-close:hover{background:rgba(255,255,255,.18)}
-body.lightbox-open{overflow:hidden}
-@media(max-width:520px){.activity-photo img{max-height:480px}.image-lightbox{padding:60px 10px 12px}.image-lightbox img{max-width:96vw;max-height:calc(100dvh - 84px)}}
+@media(max-width:600px){
+  .activity-photo{margin-top:20px}
+  .activity-photo a{border-radius:12px}
+  .activity-photo img{width:100%;height:auto}
+  .activity-photo figcaption{font-size:.82rem;margin-top:9px}
+}
 </style>
 </head>
 <body data-page="activities">
